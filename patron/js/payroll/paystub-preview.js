@@ -18,7 +18,10 @@
   }
 
   function esc(s) {
-    return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    if (global.JobsiteEscapeHtml && global.JobsiteEscapeHtml.escapeHtml) {
+      return global.JobsiteEscapeHtml.escapeHtml(s);
+    }
+    return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
   function numberToWords(n) {

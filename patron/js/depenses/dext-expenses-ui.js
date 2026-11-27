@@ -56,13 +56,15 @@
     return L ? 'En attente' : 'Pending';
   }
 
-  function escapeHtml(s) {
-    return String(s ?? '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
-  }
+  const escapeHtml = (s) =>
+    (global.JobsiteEscapeHtml && global.JobsiteEscapeHtml.escapeHtml
+      ? global.JobsiteEscapeHtml.escapeHtml(s)
+      : String(s ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;'));
+
 
   function thumbHtml(e, API_URL, authToken, lang) {
     const fn = receiptFileName(e);

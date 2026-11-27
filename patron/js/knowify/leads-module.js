@@ -14,13 +14,15 @@
   };
   const COLORS = { nouveau: '#64748b', contacte: '#f59e0b', qualifie: '#34d399', perdu: '#f87171', converti: '#378add' };
 
-  function escapeHtml(s) {
-    return String(s ?? '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
-  }
+  const escapeHtml = (s) =>
+    (global.JobsiteEscapeHtml && global.JobsiteEscapeHtml.escapeHtml
+      ? global.JobsiteEscapeHtml.escapeHtml(s)
+      : String(s ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;'));
+
 
   function statusPill(st, lang) {
     const lbl = (STATUT[lang] || STATUT.fr)[st] || st;

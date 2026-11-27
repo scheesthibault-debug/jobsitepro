@@ -12,6 +12,9 @@
   }
 
   function escAttr(s) {
+    if (global.JobsiteEscapeHtml && global.JobsiteEscapeHtml.escapeAttr) {
+      return global.JobsiteEscapeHtml.escapeAttr(s);
+    }
     return String(s ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
   }
 

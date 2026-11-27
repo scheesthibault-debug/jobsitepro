@@ -42,6 +42,7 @@ window.addEventListener('beforeinstallprompt', function(e) {
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;600;700&family=Manrope:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/app-skins.css">
 <link rel="stylesheet" href="css/dext-scan.css">
+<script src="../shared/escape-html.js"></script>
 <script src="js/theme-skins.js"></script>
 <script src="js/auth-rbac.js?v=1"></script>
 <script src="js/product-plans.js?v=2"></script>
@@ -297,6 +298,20 @@ textarea.fi{min-height:96px;resize:vertical;line-height:1.45}
     <div class="form-group"><label class="form-label" id="emp-reg-lbl-phone">Téléphone (optionnel)</label><input class="fi" id="emp-reg-phone" type="tel" autocomplete="tel"></div>
     <button class="btn btn-primary" id="emp-reg-btn" onclick="creerCompteEmploye()"><i class="ti ti-user-plus"></i> <span id="emp-reg-btn-txt">Créer mon compte</span></button>
     <p style="font-size:11px;color:var(--text3);margin-top:10px;text-align:center;cursor:pointer" onclick="showLoginFromReg()">Déjà un compte ? Se connecter →</p>
+  </div>
+</div>
+
+<div class="screen" id="screen-pending-activation">
+  <div class="auth-box" style="text-align:center">
+    <img src="logo-banner.png?v=4" alt="JobsitePro" class="auth-logo-img">
+    <div style="width:56px;height:56px;border-radius:50%;background:var(--orange-bg);display:flex;align-items:center;justify-content:center;margin:8px auto 14px">
+      <i class="ti ti-user-pause" style="font-size:28px;color:var(--orange)"></i>
+    </div>
+    <div class="auth-title" style="font-size:18px;margin-bottom:8px" id="pending-title">Compte en attente</div>
+    <p style="font-size:13px;color:var(--text2);line-height:1.45;margin-bottom:18px" id="pending-msg">Compte en attente d'activation par votre employeur</p>
+    <button class="btn btn-primary" type="button" onclick="logout()" id="pending-logout-btn">
+      <i class="ti ti-logout"></i> <span id="pending-logout-lbl">Déconnexion</span>
+    </button>
   </div>
 </div>
 
@@ -1108,6 +1123,9 @@ applyOcrUrlOverride();
 let API_URL = resolveApiUrl();
 
 let authToken = localStorage.getItem('ct_token') || '';
+const escHtml = (s) => (window.JobsiteEscapeHtml ? JobsiteEscapeHtml.escapeHtml(s) : String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'));
+const escAttr = (s) => (window.JobsiteEscapeHtml ? JobsiteEscapeHtml.escapeAttr(s) : escHtml(s));
+
 var currentUser = JSON.parse(localStorage.getItem('ct_user') || 'null');
 let activeEntry = JSON.parse(localStorage.getItem('ct_active_entry') || 'null');
 let currentTab = 'home';
@@ -1220,7 +1238,7 @@ async function loadActiveEntry(uid){
 }
 
 // ── SETUP / LOGIN ─────────────────────────────────────────────
-const AUTH_SCREENS=['screen-login','screen-setup','screen-emp-register','screen-reset-request','screen-reset-confirm'];
+const AUTH_SCREENS=['screen-login','screen-setup','screen-emp-register','screen-reset-request','screen-reset-confirm','screen-pending-activation'];
 function hideAuthScreens(){AUTH_SCREENS.forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('show');});}
 
 function parseResetToken(){
@@ -1345,6 +1363,33 @@ function parseLoginError(e) {
   return t('err_login');
 }
 
+function isUserAccountActive(user) {
+  return user != null && user.is_active === true;
+}
+
+function showPendingActivationScreen() {
+  hideAuthScreens();
+  const app = document.getElementById('app');
+  if (app) app.style.display = 'none';
+  const fr = lang === 'fr';
+  const title = document.getElementById('pending-title');
+  const msg = document.getElementById('pending-msg');
+  const lbl = document.getElementById('pending-logout-lbl');
+  if (title) title.textContent = fr ? 'Compte en attente' : 'Account pending';
+  if (msg) msg.textContent = fr
+    ? "Compte en attente d'activation par votre employeur"
+    : 'Account pending activation by your employer';
+  if (lbl) lbl.textContent = fr ? 'Déconnexion' : 'Sign out';
+  document.getElementById('screen-pending-activation')?.classList.add('show');
+}
+
+/** @returns {boolean} true si le compte est actif et l'app peut continuer */
+function gateActiveAccountOrPending() {
+  if (isUserAccountActive(currentUser)) return true;
+  showPendingActivationScreen();
+  return false;
+}
+
 async function doLogin(){
   const email=document.getElementById('login-email').value.trim(); const pass=document.getElementById('login-pass').value;
   const errEl=document.getElementById('login-err'); const btn=document.getElementById('login-btn');
@@ -1354,8 +1399,9 @@ async function doLogin(){
     authToken=data.token;
     currentUser=window.ChantierTrackRBAC?.mergeAuthUserRecord(data.record,null)||data.record;
     localStorage.setItem('ct_token',authToken); localStorage.setItem('ct_user',JSON.stringify(currentUser));
-    await refreshCurrentUserWithCompany();
     document.getElementById('screen-login').classList.remove('show');
+    if (!gateActiveAccountOrPending()) { btn.disabled = false; return; }
+    await refreshCurrentUserWithCompany();
     startApp();
   }catch(e){
     errEl.textContent=parseLoginError(e);
@@ -1364,7 +1410,17 @@ async function doLogin(){
   }
 }
 
-function logout(){stopNotifPolling();notifSessionReady=false;localStorage.removeItem('ct_token');localStorage.removeItem('ct_user');authToken='';currentUser=null;document.getElementById('app').style.display='none';showLoginScreen();}
+function logout(){
+  stopNotifPolling();
+  notifSessionReady=false;
+  localStorage.removeItem('ct_token');
+  localStorage.removeItem('ct_user');
+  authToken='';
+  currentUser=null;
+  document.getElementById('app').style.display='none';
+  document.getElementById('screen-pending-activation')?.classList.remove('show');
+  showLoginScreen();
+}
 
 function isTouchMobileDevice() {
   return navigator.maxTouchPoints > 0 || window.matchMedia('(pointer: coarse)').matches;
@@ -1562,6 +1618,7 @@ async function proceedAfterInstallGate() {
       currentUser = window.ChantierTrackRBAC?.mergeAuthUserRecord(refreshed.record, currentUser) || refreshed.record;
       localStorage.setItem('ct_user', JSON.stringify(currentUser));
     }
+    if (!gateActiveAccountOrPending()) return;
     startApp();
   } catch { showLoginScreen(); }
 }
@@ -1663,7 +1720,9 @@ async function creerCompteEmploye() {
 }
 
 async function startApp(){
+  if (!gateActiveAccountOrPending()) return;
   await refreshCurrentUserWithCompany();
+  if (!gateActiveAccountOrPending()) return;
   if(window.ChantierTrackEmployeeRBAC&&!ChantierTrackEmployeeRBAC.guardEmployeeAppEntry()){
     logout();
     return;
@@ -2391,7 +2450,7 @@ async function renderHome(){
   const banner=document.getElementById('clock-banner');
   if(activeEntry){
     const site=activeEntry.expand?.site; const dur=durMins(activeEntry.clock_in,new Date());
-    banner.innerHTML=`<div class="status-on"><div class="live-dot"></div><div><div style="font-size:13px;font-weight:600">${t('on_site')} ${fmtTime(activeEntry.clock_in)}</div><div style="font-size:11px;color:var(--green-l)">${site?.name||'–'} · ${minsToH(dur)}</div></div></div>`;
+    banner.innerHTML=`<div class="status-on"><div class="live-dot"></div><div><div style="font-size:13px;font-weight:600">${t('on_site')} ${fmtTime(activeEntry.clock_in)}</div><div style="font-size:11px;color:var(--green-l)">${escHtml(site?.name||'–')} · ${minsToH(dur)}</div></div></div>`;
   }else if(hasBlockingUnsignedDocuments()){
     const n=getPendingSignDocuments().length;
     banner.innerHTML=`<div class="status-off" style="border:1px solid rgba(234,140,42,.35);background:rgba(234,140,42,.08);display:flex;align-items:flex-start;gap:9px"><i class="ti ti-file-certificate" style="font-size:16px;color:var(--orange);flex-shrink:0;margin-top:1px"></i><div style="font-size:12px;color:var(--text2);line-height:1.35">${tf('clock_blocked_docs',{n})}</div></div>`;
@@ -2402,14 +2461,14 @@ async function renderHome(){
   const homeHint = document.getElementById('home-assign-hint');
   if (homeHint) homeHint.style.display = 'none';
   document.getElementById('home-sites').innerHTML = mySites.length
-    ? `<div class="card"><div class="card-header"><span class="card-title">${t('tab_clock')}</span></div>${mySites.map(s=>`<div style="padding:11px 13px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;background:var(--blue-bg);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-building-skyscraper" style="font-size:18px;color:var(--blue)"></i></div><div style="flex:1"><div style="font-size:14px;font-weight:600">${s.name}</div><div style="font-size:11px;color:var(--text3)">${s.address||''}</div></div><span class="badge-g">${t('active')}</span></div>`).join('')}</div>`
+    ? `<div class="card"><div class="card-header"><span class="card-title">${t('tab_clock')}</span></div>${mySites.map(s=>`<div style="padding:11px 13px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:10px"><div style="width:36px;height:36px;background:var(--blue-bg);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-building-skyscraper" style="font-size:18px;color:var(--blue)"></i></div><div style="flex:1"><div style="font-size:14px;font-weight:600">${escHtml(s.name)}</div><div style="font-size:11px;color:var(--text3)">${escHtml(s.address||'')}</div></div><span class="badge-g">${t('active')}</span></div>`).join('')}</div>`
     : '';
 }
 
 // ── CLOCK ─────────────────────────────────────────────────────
 function renderClock(){
   const site=activeEntry?.expand?.site||mySites[0];
-  document.getElementById('clock-site-info').innerHTML=site?`<div class="card"><div style="padding:12px 13px;display:flex;align-items:center;gap:10px"><div style="width:38px;height:38px;background:var(--blue-bg);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-building-skyscraper" style="font-size:20px;color:var(--blue)"></i></div><div><div style="font-size:15px;font-weight:600">${site.name}</div><div style="font-size:12px;color:var(--text3)">${site.address||''}</div></div></div></div>`:'';
+  document.getElementById('clock-site-info').innerHTML=site?`<div class="card"><div style="padding:12px 13px;display:flex;align-items:center;gap:10px"><div style="width:38px;height:38px;background:var(--blue-bg);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-building-skyscraper" style="font-size:20px;color:var(--blue)"></i></div><div><div style="font-size:15px;font-weight:600">${escHtml(site.name)}</div><div style="font-size:12px;color:var(--text3)">${escHtml(site.address||'')}</div></div></div></div>`:'';
   if(activeEntry){
     const dur=durMins(activeEntry.clock_in,new Date());
     document.getElementById('clock-big-status').innerHTML=`<div class="big-status"><div class="big-status-val" style="color:var(--green-l)">${lang==='fr'?'Sur chantier':'On site'}</div><div class="big-status-sub">${lang==='fr'?'Depuis':'Since'} ${fmtTime(activeEntry.clock_in)} · ${minsToH(dur)}</div></div>`;
@@ -2554,17 +2613,17 @@ async function renderDocs(){
 
 function docRow(d, signed) {
   const hasFile = !!d.file;
-  const safeTitle = (d.title || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+  const safeTitle = escAttr(d.title || '');
   const siteName = siteNameForDoc(d);
   return `<div class="doc-row" style="flex-wrap:wrap;gap:8px">
     <div class="doc-icon"><i class="ti ti-file-certificate" style="font-size:18px;color:${signed?'var(--green-l)':'var(--orange)'}"></i></div>
     <div style="flex:1;min-width:140px">
-      <div style="font-size:15px;font-weight:600;line-height:1.3">${d.title}</div>
-      <div style="font-size:13px;color:var(--text2);margin-top:2px;line-height:1.35">${siteName}${d.deadline?` · ${lang==='fr'?'avant le':'before'} ${fmtDate(d.deadline)}`:''}</div>
+      <div style="font-size:15px;font-weight:600;line-height:1.3">${escHtml(d.title)}</div>
+      <div style="font-size:13px;color:var(--text2);margin-top:2px;line-height:1.35">${escHtml(siteName)}${d.deadline?` · ${lang==='fr'?'avant le':'before'} ${fmtDate(d.deadline)}`:''}</div>
     </div>
     <div style="display:flex;gap:6px;align-items:center">
-      ${hasFile ? `<button type="button" class="btn btn-sm" data-doc-id="${d.id}" onclick="viewDocById(this.dataset.docId)" style="white-space:nowrap;background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue)"><i class="ti ti-eye" style="font-size:14px"></i> ${lang==='fr'?'Lire':'Read'}</button>` : ''}
-      ${!signed ? `<button type="button" class="btn btn-primary btn-sm" onclick="openSign('${d.id}','${safeTitle}')" style="white-space:nowrap"><i class="ti ti-draw" style="font-size:14px"></i> ${lang==='fr'?'Signer':'Sign'}</button>` : `<span class="badge-g" style="font-size:11px;padding:3px 8px"><i class="ti ti-check"></i> ${lang==='fr'?'Signé':'Signed'}</span><button type="button" class="btn btn-d btn-sm" style="padding:6px 8px" onclick="hideDocId('${d.id}')" title="${t('clear_docs')}"><i class="ti ti-eye-off" style="font-size:14px"></i></button>`}
+      ${hasFile ? `<button type="button" class="btn btn-sm" data-doc-id="${escAttr(d.id)}" onclick="viewDocById(this.dataset.docId)" style="white-space:nowrap;background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue)"><i class="ti ti-eye" style="font-size:14px"></i> ${lang==='fr'?'Lire':'Read'}</button>` : ''}
+      ${!signed ? `<button type="button" class="btn btn-primary btn-sm" onclick="openSign('${escAttr(d.id)}','${safeTitle}')" style="white-space:nowrap"><i class="ti ti-draw" style="font-size:14px"></i> ${lang==='fr'?'Signer':'Sign'}</button>` : `<span class="badge-g" style="font-size:11px;padding:3px 8px"><i class="ti ti-check"></i> ${lang==='fr'?'Signé':'Signed'}</span><button type="button" class="btn btn-d btn-sm" style="padding:6px 8px" onclick="hideDocId('${escAttr(d.id)}')" title="${t('clear_docs')}"><i class="ti ti-eye-off" style="font-size:14px"></i></button>`}
     </div>
   </div>`;
 }

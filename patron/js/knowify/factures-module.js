@@ -15,13 +15,15 @@
   };
   const STAT_COL = { brouillon: '#64748b', envoyee: '#f59e0b', partielle: '#378add', payee: '#34d399', annulee: '#94a3b8' };
 
-  function escapeHtml(s) {
-    return String(s ?? '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
-  }
+  const escapeHtml = (s) =>
+    (global.JobsiteEscapeHtml && global.JobsiteEscapeHtml.escapeHtml
+      ? global.JobsiteEscapeHtml.escapeHtml(s)
+      : String(s ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;'));
+
 
   function statutPill(st, lang) {
     const lbl = (STATUT[lang] || STATUT.fr)[st] || st;

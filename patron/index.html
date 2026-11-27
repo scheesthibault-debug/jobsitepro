@@ -22,6 +22,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;600;700&family=Manrope:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/app-skins.css">
 <link rel="stylesheet" href="css/modules-finance.css">
+<script src="../shared/escape-html.js"></script>
 <script src="js/theme-skins.js"></script>
 <script src="js/nav-sections.js"></script>
 <script src="js/auth-rbac.js?v=8"></script>
@@ -1936,6 +1937,9 @@ function resolveApiUrl() {
 let API_URL = resolveApiUrl();
 
 let authToken = localStorage.getItem('ct_token') || '';
+const escHtml = (s) => (window.JobsiteEscapeHtml ? JobsiteEscapeHtml.escapeHtml(s) : String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'));
+const escAttr = (s) => (window.JobsiteEscapeHtml ? JobsiteEscapeHtml.escapeAttr(s) : escHtml(s));
+
 var currentUser = JSON.parse(localStorage.getItem('ct_user') || 'null');
 let currentPage = 'dashboard';
 let mapObj = null, mapInitialized = false, mapInterval = null, empMarkers = {}, mapSecs = 0;
@@ -2875,7 +2879,7 @@ async function renderDashboard() {
 
   document.getElementById('dash-sites').innerHTML = (sites.items||[]).slice(0,3).map(s=>`
     <div style="padding:8px 14px;border-bottom:0.5px solid var(--border)">
-      <div style="display:flex;justify-content:space-between;margin-bottom:4px"><div style="font-size:12px;font-weight:500">${s.name}</div>${statusBadge(s.status)}</div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px"><div style="font-size:12px;font-weight:500">${escHtml(s.name)}</div>${statusBadge(s.status)}</div>
       <div class="progress"><div class="progress-fill" style="width:${s.progress||0}%"></div></div>
       <div style="font-size:10px;color:var(--text3);margin-top:2px">${s.progress||0}%</div>
     </div>`).join('') || `<div style="padding:20px;text-align:center;color:var(--text3)">${t('no_data')}</div>`;
@@ -2892,8 +2896,8 @@ async function renderDashboard() {
     const siteLabel = p.expand?.site?.name || siteNameMap[p.site] || '';
     return `<div style="display:flex;align-items:center;gap:8px;padding:7px 14px;border-bottom:0.5px solid var(--border);font-size:12px">
       ${avHtml(empName, p.employee, 26)}
-      <span style="flex:1">${empName}</span>
-      <span style="color:var(--text3)">${siteLabel}</span>
+      <span style="flex:1">${escHtml(empName)}</span>
+      <span style="color:var(--text3)">${escHtml(siteLabel)}</span>
       <span class="badge badge-g">${t('active')} ${fmtTime(p.clock_in)}</span>
     </div>`;
   }).join('') || `<div style="padding:20px;text-align:center;color:var(--text3)">${t('no_active_clockins')}</div>`;
@@ -2905,17 +2909,17 @@ async function renderDashboard() {
     const signed = d._signed || 0;
     const total = expected || signed || 1;
     const pct = Math.min(100, Math.round(signed / total * 100));
-    const safeTitle = (d.title || '').replace(/'/g, "\\'");
-    const safeFile = (d.file || '').replace(/'/g, "\\'");
+    const safeTitle = escAttr(d.title || '');
+    const safeFile = escAttr(d.file || '');
     return `<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:0.5px solid var(--border)">
       <div style="width:32px;height:32px;background:var(--orange-bg);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-file-certificate" style="font-size:15px;color:var(--orange)"></i></div>
       <div style="flex:1;min-width:0">
-        <div style="font-size:12px;font-weight:600">${d.title || '–'}</div>
-        <div style="font-size:10px;color:var(--text3)">${d.expand?.site?.name || siteNameMap[d.site] || ''} · ${signed}/${expected || '?'} ${t('signed')}</div>
+        <div style="font-size:12px;font-weight:600">${escHtml(d.title || '–')}</div>
+        <div style="font-size:10px;color:var(--text3)">${escHtml(d.expand?.site?.name || siteNameMap[d.site] || '')} · ${signed}/${expected || '?'} ${t('signed')}</div>
         <div class="progress" style="margin-top:3px"><div class="progress-fill" style="width:${pct}%;background:var(--orange)"></div></div>
       </div>
-      ${d.file ? `<button class="btn btn-p btn-sm" onclick="viewDocPatron('${d.id}','${safeFile}','${safeTitle}')" title="${lang==='fr'?'Lire':'Read'}"><i class="ti ti-eye" style="font-size:11px"></i> ${lang==='fr'?'Lire':'View'}</button>` : ''}
-      <button class="btn btn-sm" onclick="sendReminderDoc('${d.id}','${safeTitle}')" title="${t('remind')}"><i class="ti ti-bell" style="font-size:11px"></i></button>
+      ${d.file ? `<button class="btn btn-p btn-sm" onclick="viewDocPatron('${escAttr(d.id)}','${safeFile}','${safeTitle}')" title="${lang==='fr'?'Lire':'Read'}"><i class="ti ti-eye" style="font-size:11px"></i> ${lang==='fr'?'Lire':'View'}</button>` : ''}
+      <button class="btn btn-sm" onclick="sendReminderDoc('${escAttr(d.id)}','${safeTitle}')" title="${t('remind')}"><i class="ti ti-bell" style="font-size:11px"></i></button>
     </div>`;
   }).join('') : `<div style="padding:20px;text-align:center;color:var(--text3)">✓ ${t('all_signed')}</div>`;
 }
@@ -2936,13 +2940,13 @@ async function renderChantiers() {
     <div class="site-card">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">
         ${statusBadge(s.status)}
-        <div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openModal('site','${s.id}')"><i class="ti ti-edit" style="font-size:11px"></i></button><button class="btn btn-d btn-sm" onclick="deleteRec('sites','${s.id}','chantiers')"><i class="ti ti-trash" style="font-size:11px"></i></button></div>
+        <div style="display:flex;gap:4px"><button class="btn btn-sm" onclick="openModal('site','${escAttr(s.id)}')"><i class="ti ti-edit" style="font-size:11px"></i></button><button class="btn btn-d btn-sm" onclick="deleteRec('sites','${escAttr(s.id)}','chantiers')"><i class="ti ti-trash" style="font-size:11px"></i></button></div>
       </div>
-      <div style="font-size:13px;font-weight:600;margin-bottom:3px">${s.name}</div>
-      <div style="font-size:11px;color:var(--text3);margin-bottom:7px"><i class="ti ti-map-pin" style="font-size:10px"></i> ${s.address||'–'}</div>
+      <div style="font-size:13px;font-weight:600;margin-bottom:3px">${escHtml(s.name)}</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:7px"><i class="ti ti-map-pin" style="font-size:10px"></i> ${escHtml(s.address||'–')}</div>
       <div class="progress"><div class="progress-fill" style="width:${s.progress||0}%"></div></div>
       <div style="font-size:10px;color:var(--text3);margin-top:2px">${s.progress||0}%</div>
-      <button type="button" class="btn btn-sm" style="margin-top:8px;width:100%" onclick="event.stopPropagation();openJobCostsForSite('${s.id}')"><i class="ti ti-chart-pie"></i> ${lang==='fr'?'Coûts':'Costs'}</button>
+      <button type="button" class="btn btn-sm" style="margin-top:8px;width:100%" onclick="event.stopPropagation();openJobCostsForSite('${escAttr(s.id)}')"><i class="ti ti-chart-pie"></i> ${lang==='fr'?'Coûts':'Costs'}</button>
     </div>`).join('') + `<div class="site-add" onclick="openModal('site')"><i class="ti ti-plus" style="font-size:20px;color:var(--text3)"></i><span style="font-size:12px;color:var(--text2)">${t('new_site')}</span></div>`;
 }
 
@@ -2972,12 +2976,12 @@ async function renderAffectations() {
       || a.expand?.employee?.name
       || (emps.items||[]).find(e=>e.id===a.employee)?.email
       || a.employee;
-    return `<div class="list-row">${avHtml(empName,a.employee,30)}<div class="row-info"><div class="row-name">${empName}</div><div class="row-sub"><i class="ti ti-building-skyscraper" style="font-size:10px"></i> ${a.expand?.site?.name||a.site||'–'}</div></div>${statusBadge(a.status)}<button class="btn btn-d btn-sm" onclick="deactivateAssignment('${a.id}')" title="${t('remove')}"><i class="ti ti-x" style="font-size:11px"></i></button></div>`;
+    return `<div class="list-row">${avHtml(empName,a.employee,30)}<div class="row-info"><div class="row-name">${escHtml(empName)}</div><div class="row-sub"><i class="ti ti-building-skyscraper" style="font-size:10px"></i> ${escHtml(a.expand?.site?.name||a.site||'–')}</div></div>${statusBadge(a.status)}<button class="btn btn-d btn-sm" onclick="deactivateAssignment('${escAttr(a.id)}')" title="${t('remove')}"><i class="ti ti-x" style="font-size:11px"></i></button></div>`;
   }).join('') || `<div style="padding:20px;text-align:center;color:var(--text3)">${t('no_data')}</div>`;
   const sel = document.getElementById('notif-emp');
-  if (sel) sel.innerHTML = `<option value="">${t('all_employees')}</option>`+(emps.items||[]).filter(e=>e.role!=='admin').map(e=>`<option value="${e.id}">${e.name||e.email}</option>`).join('');
+  if (sel) sel.innerHTML = `<option value="">${t('all_employees')}</option>`+(emps.items||[]).filter(e=>e.role!=='admin').map(e=>`<option value="${escAttr(e.id)}">${escHtml(e.name||e.email)}</option>`).join('');
   const siteSel = document.getElementById('notif-site');
-  if (siteSel) siteSel.innerHTML = `<option value="">${t('select_site')}</option>`+(sites.items||[]).map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
+  if (siteSel) siteSel.innerHTML = `<option value="">${t('select_site')}</option>`+(sites.items||[]).map(s=>`<option value="${escAttr(s.id)}">${escHtml(s.name)}</option>`).join('');
   toggleNotifSiteField();
 }
 
@@ -3018,11 +3022,11 @@ async function renderPointages() {
     }
     const ptgDate = (p.clock_in || p.created || '').replace(/'/g, "\\'");
     const durM = entryMinutes(p);
-    return `<tr><td>${empName}</td><td style="color:var(--text2)">${siteName}</td><td>${fmtDate(p.clock_in)} ${fmtTime(p.clock_in)}</td><td>${p.clock_out?fmtDate(p.clock_out)+' '+fmtTime(p.clock_out):`<span class="badge badge-g">${t('in_progress')}</span>`}</td><td style="font-weight:500">${durM > 0 ? minsToH(durM) : '–'}</td><td>${gpsCell}</td><td style="white-space:nowrap"><button type="button" class="btn btn-d btn-sm" onclick="deleteRec('time_entries','${p.id}','pointages','${ptgDate}')" title="${t('confirm_delete')}"><i class="ti ti-trash" style="font-size:11px"></i></button></td></tr>`;
+    return `<tr><td>${escHtml(empName)}</td><td style="color:var(--text2)">${escHtml(siteName)}</td><td>${fmtDate(p.clock_in)} ${fmtTime(p.clock_in)}</td><td>${p.clock_out?fmtDate(p.clock_out)+' '+fmtTime(p.clock_out):`<span class="badge badge-g">${t('in_progress')}</span>`}</td><td style="font-weight:500">${durM > 0 ? minsToH(durM) : '–'}</td><td>${gpsCell}</td><td style="white-space:nowrap"><button type="button" class="btn btn-d btn-sm" onclick="deleteRec('time_entries','${escAttr(p.id)}','pointages','${escAttr(ptgDate)}')" title="${t('confirm_delete')}"><i class="ti ti-trash" style="font-size:11px"></i></button></td></tr>`;
   }).join('');
   const alertBox = offSiteAlerts.length ? `<div style="background:var(--red-bg);border:1px solid var(--red);border-radius:10px;padding:12px 14px;margin-bottom:12px">
     <div style="font-weight:600;color:var(--red);margin-bottom:6px;font-size:13px"><i class="ti ti-alert-triangle"></i> ${t('off_site_alert_title')} (${offSiteAlerts.length})</div>
-    ${offSiteAlerts.map(a => `<div style="font-size:12px;color:var(--text2);padding:3px 0">• <strong>${a.empName}</strong> — ${a.siteName} · ${a.dist}m ${t('from_site')} (${lang==='fr'?'rayon':'radius'} ${a.radius}m) · ${fmtTime(a.clockIn)}</div>`).join('')}
+    ${offSiteAlerts.map(a => `<div style="font-size:12px;color:var(--text2);padding:3px 0">• <strong>${escHtml(a.empName)}</strong> — ${escHtml(a.siteName)} · ${a.dist}m ${t('from_site')} (${lang==='fr'?'rayon':'radius'} ${a.radius}m) · ${fmtTime(a.clockIn)}</div>`).join('')}
   </div>` : '';
   document.getElementById('pointages-list').innerHTML = items.length
     ? buildBackupPolicyBanner('monthly') + alertBox + `<table class="data-table"><thead><tr><th>${t('col_employee')}</th><th>${t('col_site')}</th><th>${t('col_clock_in')}</th><th>${t('col_clock_out')}</th><th>${t('col_duration')}</th><th>GPS</th><th>${t('col_actions')}</th></tr></thead><tbody>${rows}</tbody></table>`
@@ -3030,17 +3034,34 @@ async function renderPointages() {
 }
 
 // ── EMPLOYÉS ──────────────────────────────────────────────────
+async function activateEmployee(id) {
+  try {
+    await api('PATCH', `/api/collections/users/records/${id}`, { is_active: true });
+    showToast(lang === 'fr' ? 'Compte activé' : 'Account activated');
+    renderPage('employes');
+  } catch (e) {
+    showToast(e.message || (lang === 'fr' ? 'Activation impossible' : 'Activation failed'), false);
+  }
+}
+
 async function renderEmployes() {
   const data = await apiList('users','','','-created',100);
   const items = data.items||[];
   document.getElementById('emp-count-title').textContent = `${items.length} ${t('employees')}`;
-  document.getElementById('emp-list').innerHTML = items.length ? items.map(e=>`
-    <div class="list-row">${avHtml(e.name||e.email,e.id)}
-      <div class="row-info"><div class="row-name">${e.name||e.email}</div><div class="row-sub">${window.ChantierTrackRBAC?ChantierTrackRBAC.rbacRoleLabel(ChantierTrackRBAC.getRbacRole(e),lang):''}${e.job_title?` · ${e.job_title}`:''}${e.phone?` · ${e.phone}`:''}</div></div>
-      <span class="badge badge-g">${t('active')}</span>
-      <button class="btn btn-sm" onclick="openModal('emp','${e.id}')"><i class="ti ti-edit" style="font-size:11px"></i></button>
-      <button class="btn btn-d btn-sm" onclick="deleteRec('users','${e.id}','employes')"><i class="ti ti-trash" style="font-size:11px"></i></button>
-    </div>`).join('') : `<div style="padding:24px;text-align:center;color:var(--text3)">${t('no_data')}</div>`;
+  document.getElementById('emp-list').innerHTML = items.length ? items.map(e=>{
+    const active = e.is_active !== false;
+    const badge = active
+      ? `<span class="badge badge-g">${t('active')}</span>`
+      : `<span class="badge badge-o">${lang==='fr'?'En attente':'Pending'}</span>`;
+    const activateBtn = active ? '' : `<button type="button" class="btn btn-p btn-sm" onclick="activateEmployee('${escAttr(e.id)}')" title="${lang==='fr'?'Activer le compte':'Activate account'}"><i class="ti ti-user-check" style="font-size:11px"></i> ${lang==='fr'?'Activer':'Activate'}</button>`;
+    return `<div class="list-row">${avHtml(e.name||e.email,e.id)}
+      <div class="row-info"><div class="row-name">${escHtml(e.name||e.email)}</div><div class="row-sub">${escHtml(window.ChantierTrackRBAC?ChantierTrackRBAC.rbacRoleLabel(ChantierTrackRBAC.getRbacRole(e),lang):'')}${e.job_title?` · ${escHtml(e.job_title)}`:''}${e.phone?` · ${escHtml(e.phone)}`:''}</div></div>
+      ${badge}
+      ${activateBtn}
+      <button class="btn btn-sm" onclick="openModal('emp','${escAttr(e.id)}')"><i class="ti ti-edit" style="font-size:11px"></i></button>
+      <button class="btn btn-d btn-sm" onclick="deleteRec('users','${escAttr(e.id)}','employes')"><i class="ti ti-trash" style="font-size:11px"></i></button>
+    </div>`;
+  }).join('') : `<div style="padding:24px;text-align:center;color:var(--text3)">${t('no_data')}</div>`;
 }
 
 // ── HORAIRES ──────────────────────────────────────────────────
@@ -3530,10 +3551,10 @@ async function renderHoraires() {
     const siteName = s.expand?.site?.name || siteMap[s.site] || '–';
     return `<div class="list-row">
       ${avHtml(empName,s.employee,28)}
-      <div class="row-info"><div class="row-name">${empName}</div><div class="row-sub">${siteName} · ${fmtDate(s.shift_date)}</div></div>
-      <span style="font-size:12px;font-weight:500">${s.start_time}–${s.end_time}</span>
+      <div class="row-info"><div class="row-name">${escHtml(empName)}</div><div class="row-sub">${escHtml(siteName)} · ${fmtDate(s.shift_date)}</div></div>
+      <span style="font-size:12px;font-weight:500">${escHtml(s.start_time)}–${escHtml(s.end_time)}</span>
       ${statusBadge(s.status||'scheduled')}
-      <button class="btn btn-d btn-sm" onclick="deleteRec('shifts','${s.id}','horaires')"><i class="ti ti-trash" style="font-size:11px"></i></button>
+      <button class="btn btn-d btn-sm" onclick="deleteRec('shifts','${escAttr(s.id)}','horaires')"><i class="ti ti-trash" style="font-size:11px"></i></button>
     </div>`;
   }).join('') : `<div style="padding:20px;text-align:center;color:var(--text3)">${t('no_data')}</div>`;
   } catch (e) {

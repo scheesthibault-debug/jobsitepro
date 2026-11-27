@@ -19,13 +19,15 @@
   };
   const STAT_COL = { brouillon: '#64748b', envoye: '#f59e0b', accepte: '#34d399', refuse: '#f87171', expire: '#94a3b8' };
 
-  function escapeHtml(s) {
-    return String(s ?? '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
-  }
+  const escapeHtml = (s) =>
+    (global.JobsiteEscapeHtml && global.JobsiteEscapeHtml.escapeHtml
+      ? global.JobsiteEscapeHtml.escapeHtml(s)
+      : String(s ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;'));
+
 
   function statutPill(st, lang) {
     const lbl = (STATUT_LABELS[lang] || STATUT_LABELS.fr)[st] || st;

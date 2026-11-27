@@ -1,100 +1,189 @@
 /// <reference path="../pb_data/types.d.ts" />
 /**
- * JobsiteTrack — enforcement RBAC côté serveur (approve dépenses, audit)
+ * JobsitePro — enforcement RBAC (approve dépenses, rôles users).
+ * Helpers via require(__hooks + '/lib/security.js') — isolation JSVM.
  */
 
-const APPROVE_ROLES = {
-  admin_patron: true,
-  gestionnaire: true,
-  comptable: true,
-  contremaitre: true,
-};
-
-function authUser(e) {
-  return e.httpContext?.get('authRecord') || null;
-}
-
-function getRbacRole(user) {
-  if (!user) return '';
-  let r = String(user.get('rbac_role') || '').toLowerCase().trim();
-  if (r) return r;
-  const pb = String(user.get('role') || '').toLowerCase().trim();
-  if (pb === 'admin' || pb === 'patron') return 'admin_patron';
-  if (pb === 'employe') return 'employe';
-  return 'admin_patron';
-}
-
-function canApproveExpenses(user) {
-  return !!APPROVE_ROLES[getRbacRole(user)];
-}
-
-function writeAudit(companyId, actorId, action, module, entityType, entityId, meta) {
-  try {
-    const col = $app.findCollectionByNameOrId('audit_log');
-    const r = new Record(col);
-    r.set('company', companyId);
-    if (actorId) r.set('actor', actorId);
-    r.set('action', action);
-    r.set('module', module || '');
-    r.set('entity_type', entityType || '');
-    r.set('entity_id', entityId || '');
-    if (meta) r.set('metadata', meta);
-    $app.save(r);
-  } catch (err) {
-    console.log('[rbac_guard] audit skip:', err);
-  }
-}
-
-onRecordBeforeUpdateRequest((e) => {
-  if (e.collection.name !== 'expenses') return;
-  const user = authUser(e);
-  if (!user) throw new ForbiddenError('Non authentifié');
-
-  let oldStatus = '';
-  try {
-    const orig = e.record.originalCopy();
-    if (orig) oldStatus = String(orig.get('status') || '');
-  } catch { /* */ }
-
-  const newStatus = String(e.record.get('status') || '');
-  if (oldStatus === newStatus) return;
-
-  if (newStatus === 'approved' || newStatus === 'rejected') {
-    if (!canApproveExpenses(user)) {
-      throw new ForbiddenError('Permission approve refusée pour votre rôle.');
+if (typeof onRecordUpdateRequest === 'function') {
+  onRecordUpdateRequest(function (e) {
+    var sec = require(__hooks + '/lib/security.js');
+    if (sec.isSuperuser(e)) {
+      e.next();
+      return;
     }
-    writeAudit(
-      user.get('company'),
-      user.id,
-      'approve',
-      'depenses',
-      'expenses',
-      e.record.id,
-      { from: oldStatus, to: newStatus }
-    );
-  }
-}, 'expenses');
+    var user = sec.authUser(e);
+    if (!user) throw new ForbiddenError('Non authentifié');
 
-onRecordBeforeUpdateRequest((e) => {
-  if (e.collection.name !== 'users') return;
-  const user = authUser(e);
-  if (!user) throw new ForbiddenError('Non authentifié');
+    var oldStatus = '';
+    try {
+      var orig = e.record.originalCopy();
+      if (orig) oldStatus = String(orig.get('status') || '');
+    } catch (_) { /* */ }
 
-  let oldRbac = '';
-  try {
-    const orig = e.record.originalCopy();
-    if (orig) oldRbac = String(orig.get('rbac_role') || '');
-  } catch { /* */ }
+    var newStatus = String(e.record.get('status') || '');
+    if (oldStatus !== newStatus && (newStatus === 'approved' || newStatus === 'rejected')) {
+      if (!sec.canApproveExpenses(user)) {
+        throw new ForbiddenError('Permission approve refusée pour votre rôle.');
+      }
+      sec.writeAudit(
+        user.get('company'),
+        user.id,
+        'approve',
+        'depenses',
+        'expenses',
+        e.record.id,
+        { from: oldStatus, to: newStatus }
+      );
+    }
+    e.next();
+  }, 'expenses');
 
-  const newRbac = String(e.record.get('rbac_role') || '');
-  if (oldRbac === newRbac) return;
+  onRecordUpdateRequest(function (e) {
+    var sec = require(__hooks + '/lib/security.js');
+    if (sec.isSuperuser(e)) {
+      e.next();
+      return;
+    }
+    var user = sec.authUser(e);
+    if (!user) throw new ForbiddenError('Non authentifié');
 
-  if (getRbacRole(user) !== 'admin_patron') {
-    throw new ForbiddenError('Seul admin_patron peut modifier rbac_role.');
-  }
+    var orig = null;
+    try {
+      orig = e.record.originalCopy();
+    } catch (_) { /* */ }
+    if (!orig) {
+      e.next();
+      return;
+    }
 
-  writeAudit(user.get('company'), user.id, 'manage_roles', 'utilisateurs', 'users', e.record.id, {
-    from: oldRbac,
-    to: newRbac,
-  });
-}, 'users');
+    var oldCompany = String(sec.fieldOf(orig, 'company') || '');
+    var newCompany = String(sec.fieldOf(e.record, 'company') || '');
+    if (newCompany !== oldCompany) {
+      e.record.set('company', oldCompany);
+    }
+
+    var oldRole = String(sec.fieldOf(orig, 'role') || '');
+    var newRole = String(sec.fieldOf(e.record, 'role') || '');
+    var oldRbac = String(sec.fieldOf(orig, 'rbac_role') || '');
+    var newRbac = String(sec.fieldOf(e.record, 'rbac_role') || '');
+
+    var roleChanged = newRole !== oldRole;
+    var rbacChanged = newRbac !== oldRbac;
+    if (!roleChanged && !rbacChanged) {
+      e.next();
+      return;
+    }
+
+    var authRole = String(user.get('role') || '').toLowerCase().trim();
+    var authCompany = String(user.get('company') || '');
+
+    if (authRole !== 'admin' && authRole !== 'patron') {
+      throw new ForbiddenError('Modification de rôle refusée.');
+    }
+    if (!authCompany || authCompany !== oldCompany) {
+      throw new ForbiddenError('Rôle modifiable uniquement dans votre entreprise.');
+    }
+    if (String(user.id) === String(e.record.id)) {
+      throw new ForbiddenError('Vous ne pouvez pas modifier votre propre rôle.');
+    }
+
+    if (rbacChanged) {
+      var nr = String(newRbac || '').toLowerCase().trim();
+      if (nr && !sec.VALID_RBAC[nr]) {
+        throw new BadRequestError('rbac_role invalide.');
+      }
+      if (sec.getRbacRole(user) !== 'admin_patron') {
+        throw new ForbiddenError('Seul admin_patron peut modifier rbac_role.');
+      }
+      sec.writeAudit(authCompany, user.id, 'manage_roles', 'utilisateurs', 'users', e.record.id, {
+        from: oldRbac,
+        to: newRbac,
+      });
+    }
+    e.next();
+  }, 'users');
+} else {
+  onRecordBeforeUpdateRequest(function (e) {
+    var sec = require(__hooks + '/lib/security.js');
+    if (sec.isSuperuser(e)) return;
+    var user = sec.authUser(e);
+    if (!user) throw new ForbiddenError('Non authentifié');
+
+    var oldStatus = '';
+    try {
+      var orig = e.record.originalCopy();
+      if (orig) oldStatus = String(orig.get('status') || '');
+    } catch (_) { /* */ }
+
+    var newStatus = String(e.record.get('status') || '');
+    if (oldStatus !== newStatus && (newStatus === 'approved' || newStatus === 'rejected')) {
+      if (!sec.canApproveExpenses(user)) {
+        throw new ForbiddenError('Permission approve refusée pour votre rôle.');
+      }
+      sec.writeAudit(
+        user.get('company'),
+        user.id,
+        'approve',
+        'depenses',
+        'expenses',
+        e.record.id,
+        { from: oldStatus, to: newStatus }
+      );
+    }
+  }, 'expenses');
+
+  onRecordBeforeUpdateRequest(function (e) {
+    var sec = require(__hooks + '/lib/security.js');
+    if (sec.isSuperuser(e)) return;
+    var user = sec.authUser(e);
+    if (!user) throw new ForbiddenError('Non authentifié');
+
+    var orig = null;
+    try {
+      orig = e.record.originalCopy();
+    } catch (_) { /* */ }
+    if (!orig) return;
+
+    var oldCompany = String(sec.fieldOf(orig, 'company') || '');
+    var newCompany = String(sec.fieldOf(e.record, 'company') || '');
+    if (newCompany !== oldCompany) {
+      e.record.set('company', oldCompany);
+    }
+
+    var oldRole = String(sec.fieldOf(orig, 'role') || '');
+    var newRole = String(sec.fieldOf(e.record, 'role') || '');
+    var oldRbac = String(sec.fieldOf(orig, 'rbac_role') || '');
+    var newRbac = String(sec.fieldOf(e.record, 'rbac_role') || '');
+
+    var roleChanged = newRole !== oldRole;
+    var rbacChanged = newRbac !== oldRbac;
+    if (!roleChanged && !rbacChanged) return;
+
+    var authRole = String(user.get('role') || '').toLowerCase().trim();
+    var authCompany = String(user.get('company') || '');
+
+    if (authRole !== 'admin' && authRole !== 'patron') {
+      throw new ForbiddenError('Modification de rôle refusée.');
+    }
+    if (!authCompany || authCompany !== oldCompany) {
+      throw new ForbiddenError('Rôle modifiable uniquement dans votre entreprise.');
+    }
+    if (String(user.id) === String(e.record.id)) {
+      throw new ForbiddenError('Vous ne pouvez pas modifier votre propre rôle.');
+    }
+
+    if (rbacChanged) {
+      var nr = String(newRbac || '').toLowerCase().trim();
+      if (nr && !sec.VALID_RBAC[nr]) {
+        throw new BadRequestError('rbac_role invalide.');
+      }
+      if (sec.getRbacRole(user) !== 'admin_patron') {
+        throw new ForbiddenError('Seul admin_patron peut modifier rbac_role.');
+      }
+      sec.writeAudit(authCompany, user.id, 'manage_roles', 'utilisateurs', 'users', e.record.id, {
+        from: oldRbac,
+        to: newRbac,
+      });
+    }
+  }, 'users');
+}

@@ -8,13 +8,15 @@
   let selectedId = null;
   let cachedList = [];
 
-  function escapeHtml(s) {
-    return String(s ?? '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
-  }
+  const escapeHtml = (s) =>
+    (global.JobsiteEscapeHtml && global.JobsiteEscapeHtml.escapeHtml
+      ? global.JobsiteEscapeHtml.escapeHtml(s)
+      : String(s ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;'));
+
 
   function initials(name) {
     const parts = String(name || '?').trim().split(/\s+/).filter(Boolean);

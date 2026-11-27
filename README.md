@@ -123,6 +123,21 @@ Full server install notes: `deployment/GUIDE_INSTALLATION_SERVEUR.md` and `deplo
 - Self-hosted ops (no managed PaaS out of the box); scripts assume a Linux host without full systemd sudo in some setups
 - Rotate any keys that were ever shared outside this repo before production use
 
+## Security model
+
+Multi-tenant isolation is enforced by PocketBase API rules (`company = @request.auth.company` + `@request.auth.is_active = true` on company-wide list/view) plus JS hooks (`pb_hooks/lib/security.js`) that block role escalation at signup, force public join accounts to `is_active = false`, and prevent self-modification of `role` / `rbac_role` / `company`. Payroll and expense rows are visible to the employee owner or to same-company admins (PB `role = "admin"`, which includes `comptable`).
+
+Full model, before/after rule guidance, and production apply steps: **[SECURITY.md](SECURITY.md)**.
+
+Automated checks (env-based, no secrets in repo):
+
+```bash
+export PB_URL="http://127.0.0.1:8091"
+export PB_ADMIN_EMAIL="admin@example.com"
+export PB_ADMIN_PASSWORD="..."
+bash deployment/test-security.sh
+```
+
 ## Security note
 
 This public copy uses placeholder domains (`jobsitepro.example.com`) and fake credentials in examples. Do not reuse sample secrets. Rotate QuickBooks, Resend, Gemini, and PocketBase tokens if they were previously committed elsewhere.
