@@ -144,7 +144,7 @@ This public copy uses placeholder domains (`jobsitepro.example.com`) and fake cr
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+Source-available under the PolyForm Noncommercial License 1.0.0 (see LICENSE). You may view, study and test this code for noncommercial purposes. Commercial use, resale or hosting as a paid service is not permitted.
 
 ## Author
 
