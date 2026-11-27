@@ -148,4 +148,5 @@ Source-available under the PolyForm Noncommercial License 1.0.0 (see LICENSE). Y
 ## Author
 
 Built by Thibault Schees — TS Solution Tech Acadie (Kentville, Nova Scotia).
+
 For commercial licensing or a demo, contact the author via GitHub.
