@@ -121,7 +121,6 @@ Full server install notes: `deployment/GUIDE_INSTALLATION_SERVEUR.md` and `deplo
 - Stripe subscription billing is documented but not fully automated
 - QuickBooks sync and domain migration need validation per environment
 - Self-hosted ops (no managed PaaS out of the box); scripts assume a Linux host without full systemd sudo in some setups
-- Rotate any keys that were ever shared outside this repo before production use
 
 ## Security model
 
@@ -140,7 +139,7 @@ bash deployment/test-security.sh
 
 ## Security note
 
-This public copy uses placeholder domains (`jobsitepro.example.com`) and fake credentials in examples. Do not reuse sample secrets. Rotate QuickBooks, Resend, Gemini, and PocketBase tokens if they were previously committed elsewhere.
+This public copy uses placeholder domains (`jobsitepro.example.com`) and fake credentials in examples. Never commit real keys.
 
 ## License
 
