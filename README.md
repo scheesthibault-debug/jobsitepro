@@ -148,4 +148,5 @@ Source-available under the PolyForm Noncommercial License 1.0.0 (see LICENSE). Y
 
 ## Author
 
-Built as a product for construction contractors (Canada). Suitable as a portfolio piece showing full-stack delivery: PWAs, PocketBase, integrations, and deployment tooling.
+Built by Thibault Schees — TS Solution Tech Acadie (Kentville, Nova Scotia).
+For commercial licensing or a demo, contact the author via GitHub.
