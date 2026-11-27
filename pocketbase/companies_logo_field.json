@@ -1,0 +1,13 @@
+{
+  "note": "Collection companies → champ logo_data (déjà créé chez vous). IMPORTANT: cliquez le champ → Options → Max length = 500000 (pas 5000 sinon le logo ne s'enregistre jamais).",
+  "field": {
+    "name": "logo_data",
+    "type": "text",
+    "required": false,
+    "max": 500000
+  },
+  "api_rules": {
+    "updateRule": "@request.auth.role = \"admin\" && id = @request.auth.company",
+    "comment": "Si la sauvegarde logo échoue, vérifiez que updateRule companies autorise l'admin (comme pour province/nom)."
+  }
+}

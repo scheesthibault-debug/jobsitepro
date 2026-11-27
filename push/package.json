@@ -1,0 +1,14 @@
+{
+  "name": "chantiertrack-push",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Serveur Web Push ChantierTrack (notifications PWA fermée)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "vapid": "node generate-vapid.js"
+  },
+  "dependencies": {
+    "web-push": "^3.6.7"
+  }
+}

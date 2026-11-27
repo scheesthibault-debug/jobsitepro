@@ -1,0 +1,29 @@
+# JobsitePro — PocketBase Docker (Dockge)
+# Copy into Dockge → stack chantiertrack-pb → compose.yaml
+# Fill secrets via Dockge env or a private .env — never commit real keys.
+
+version: "3.8"
+
+services:
+  chantiertrack-pb:
+    image: ghcr.io/muchobien/pocketbase:latest
+    container_name: chantiertrack-pb
+    restart: always
+    ports:
+      - "8091:8090"
+    volumes:
+      - /opt/chantiertrack/pb_data:/pb_data
+      - ./:/pb_public
+    command: >
+      serve
+      --http=0.0.0.0:8090
+      --dir=/pb_data
+      --publicDir=/pb_public
+      --hooksDir=/pb_data/pb_hooks
+    environment:
+      QUICKBOOKS_CLIENT_ID: "${QUICKBOOKS_CLIENT_ID}"
+      QUICKBOOKS_CLIENT_SECRET: "${QUICKBOOKS_CLIENT_SECRET}"
+      QUICKBOOKS_REDIRECT_URI: "${QUICKBOOKS_REDIRECT_URI:-https://jobsitepro.example.com/api/jobsitepro/oauth/quickbooks/callback}"
+      QUICKBOOKS_ENVIRONMENT: "${QUICKBOOKS_ENVIRONMENT:-sandbox}"
+      PATRON_APP_URL: "${PATRON_APP_URL:-https://jobsitepro.example.com/patron/}"
+      PUBLIC_URL: "${PUBLIC_URL:-https://jobsitepro.example.com}"

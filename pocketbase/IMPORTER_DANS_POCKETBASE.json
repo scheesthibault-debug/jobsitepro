@@ -1,0 +1,599 @@
+[
+  {
+    "id": "ct_shifts",
+    "name": "shifts",
+    "type": "base",
+    "fields": [
+      {
+        "name": "employee",
+        "type": "relation",
+        "required": false,
+        "options": {
+          "collectionId": "_pb_users_auth_",
+          "cascadeDelete": false,
+          "maxSelect": 1
+        }
+      },
+      {
+        "name": "site",
+        "type": "relation",
+        "required": false,
+        "options": {
+          "collectionId": "pbc_2001081480",
+          "cascadeDelete": false,
+          "maxSelect": 1
+        }
+      },
+      {
+        "name": "company",
+        "type": "relation",
+        "required": false,
+        "options": {
+          "collectionId": "pbc_3866053794",
+          "cascadeDelete": false,
+          "maxSelect": 1
+        }
+      },
+      {
+        "name": "shift_date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "start_time",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "end_time",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "notes",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "status",
+        "type": "select",
+        "required": false,
+        "options": {
+          "maxSelect": 1,
+          "values": [
+            "scheduled",
+            "confirmed",
+            "cancelled",
+            "completed"
+          ]
+        }
+      },
+      {
+        "name": "notified",
+        "type": "bool",
+        "required": false
+      }
+    ],
+    "listRule": "employee = @request.auth.id || company = @request.auth.company",
+    "viewRule": "employee = @request.auth.id || company = @request.auth.company",
+    "createRule": "@request.auth.role = \"admin\"",
+    "updateRule": "@request.auth.role = \"admin\"",
+    "deleteRule": "@request.auth.role = \"admin\""
+  },
+  {
+    "id": "ct_leaves",
+    "name": "leave_requests",
+    "type": "base",
+    "fields": [
+      {
+        "name": "employee",
+        "type": "relation",
+        "required": false,
+        "options": {
+          "collectionId": "_pb_users_auth_",
+          "cascadeDelete": false,
+          "maxSelect": 1
+        }
+      },
+      {
+        "name": "company",
+        "type": "relation",
+        "required": false,
+        "options": {
+          "collectionId": "pbc_3866053794",
+          "cascadeDelete": false,
+          "maxSelect": 1
+        }
+      },
+      {
+        "name": "leave_type",
+        "type": "select",
+        "required": false,
+        "options": {
+          "maxSelect": 1,
+          "values": [
+            "vacation",
+            "sick",
+            "personal",
+            "bereavement",
+            "other"
+          ]
+        }
+      },
+      {
+        "name": "start_date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "end_date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "days_count",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "reason",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "status",
+        "type": "select",
+        "required": false,
+        "options": {
+          "maxSelect": 1,
+          "values": [
+            "pending",
+            "approved",
+            "denied"
+          ]
+        }
+      },
+      {
+        "name": "manager_note",
+        "type": "text",
+        "required": false
+      }
+    ],
+    "listRule": "employee = @request.auth.id || company = @request.auth.company",
+    "viewRule": "employee = @request.auth.id || company = @request.auth.company",
+    "createRule": "employee = @request.auth.id",
+    "updateRule": "@request.auth.role = \"admin\"",
+    "deleteRule": "employee = @request.auth.id || @request.auth.role = \"admin\""
+  },
+  {
+    "id": "ct_mileage",
+    "name": "mileage_entries",
+    "type": "base",
+    "fields": [
+      {
+        "name": "employee",
+        "type": "relation",
+        "required": false,
+        "options": {
+          "collectionId": "_pb_users_auth_",
+          "cascadeDelete": false,
+          "maxSelect": 1
+        }
+      },
+      {
+        "name": "site",
+        "type": "relation",
+        "required": false,
+        "options": {
+          "collectionId": "pbc_2001081480",
+          "cascadeDelete": false,
+          "maxSelect": 1
+        }
+      },
+      {
+        "name": "company",
+        "type": "relation",
+        "required": false,
+        "options": {
+          "collectionId": "pbc_3866053794",
+          "cascadeDelete": false,
+          "maxSelect": 1
+        }
+      },
+      {
+        "name": "trip_date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "km",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "from_address",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "to_address",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "purpose",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "rate_per_km",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "total_amount",
+        "type": "number",
+        "required": false
+      }
+    ],
+    "listRule": "employee = @request.auth.id || company = @request.auth.company",
+    "viewRule": "employee = @request.auth.id || company = @request.auth.company",
+    "createRule": "employee = @request.auth.id",
+    "updateRule": "@request.auth.role = \"admin\"",
+    "deleteRule": "employee = @request.auth.id || @request.auth.role = \"admin\""
+  },
+  {
+    "id": "ct_payrates",
+    "name": "pay_rates",
+    "type": "base",
+    "fields": [
+      {
+        "name": "employee",
+        "type": "relation",
+        "required": false,
+        "options": {
+          "collectionId": "_pb_users_auth_",
+          "cascadeDelete": false,
+          "maxSelect": 1
+        }
+      },
+      {
+        "name": "company",
+        "type": "relation",
+        "required": false,
+        "options": {
+          "collectionId": "pbc_3866053794",
+          "cascadeDelete": false,
+          "maxSelect": 1
+        }
+      },
+      {
+        "name": "hourly_rate",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "overtime_rate",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "overtime_threshold",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "currency",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "is_active",
+        "type": "bool",
+        "required": false
+      }
+    ],
+    "listRule": "company = @request.auth.company",
+    "viewRule": "company = @request.auth.company",
+    "createRule": "@request.auth.role = \"admin\"",
+    "updateRule": "@request.auth.role = \"admin\"",
+    "deleteRule": "@request.auth.role = \"admin\""
+  },
+  {
+    "id": "ct_paystubs",
+    "name": "pay_stubs",
+    "type": "base",
+    "fields": [
+      {
+        "name": "employee",
+        "type": "relation",
+        "required": false,
+        "options": {
+          "collectionId": "_pb_users_auth_",
+          "cascadeDelete": false,
+          "maxSelect": 1
+        }
+      },
+      {
+        "name": "company",
+        "type": "relation",
+        "required": false,
+        "options": {
+          "collectionId": "pbc_3866053794",
+          "cascadeDelete": false,
+          "maxSelect": 1
+        }
+      },
+      {
+        "name": "period_start",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "period_end",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "regular_hours",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "overtime_hours",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "km_total",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "gross_pay",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "mileage_pay",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "total_pay",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "status",
+        "type": "select",
+        "required": false,
+        "options": {
+          "maxSelect": 1,
+          "values": [
+            "draft",
+            "sent",
+            "paid"
+          ]
+        }
+      },
+      {
+        "name": "notes",
+        "type": "text",
+        "required": false
+      }
+    ],
+    "listRule": "employee = @request.auth.id || company = @request.auth.company",
+    "viewRule": "employee = @request.auth.id || company = @request.auth.company",
+    "createRule": "@request.auth.role = \"admin\"",
+    "updateRule": "@request.auth.role = \"admin\"",
+    "deleteRule": "@request.auth.role = \"admin\""
+  },
+  {
+    "id": "ct_jobs",
+    "name": "job_costs",
+    "type": "base",
+    "fields": [
+      {
+        "name": "site",
+        "type": "relation",
+        "required": false,
+        "options": {
+          "collectionId": "pbc_2001081480",
+          "cascadeDelete": false,
+          "maxSelect": 1
+        }
+      },
+      {
+        "name": "company",
+        "type": "relation",
+        "required": false,
+        "options": {
+          "collectionId": "pbc_3866053794",
+          "cascadeDelete": false,
+          "maxSelect": 1
+        }
+      },
+      {
+        "name": "period_start",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "period_end",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "total_hours",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "labor_cost",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "mileage_cost",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "budget",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "total_cost",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "notes",
+        "type": "text",
+        "required": false
+      }
+    ],
+    "listRule": "company = @request.auth.company",
+    "viewRule": "company = @request.auth.company",
+    "createRule": "@request.auth.role = \"admin\"",
+    "updateRule": "@request.auth.role = \"admin\"",
+    "deleteRule": "@request.auth.role = \"admin\""
+  },
+  {
+    "id": "ct_expenses",
+    "name": "expenses",
+    "type": "base",
+    "fields": [
+      {
+        "name": "employee",
+        "type": "relation",
+        "required": false,
+        "options": {
+          "collectionId": "_pb_users_auth_",
+          "cascadeDelete": false,
+          "maxSelect": 1
+        }
+      },
+      {
+        "name": "company",
+        "type": "relation",
+        "required": false,
+        "options": {
+          "collectionId": "pbc_3866053794",
+          "cascadeDelete": false,
+          "maxSelect": 1
+        }
+      },
+      {
+        "name": "site",
+        "type": "relation",
+        "required": false,
+        "options": {
+          "collectionId": "pbc_2001081480",
+          "cascadeDelete": false,
+          "maxSelect": 1
+        }
+      },
+      {
+        "name": "receipt",
+        "type": "file",
+        "required": false,
+        "options": {
+          "maxSelect": 1,
+          "maxSize": 52428800
+        }
+      },
+      {
+        "name": "amount",
+        "type": "number",
+        "required": false
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "category",
+        "type": "select",
+        "required": false,
+        "options": {
+          "maxSelect": 1,
+          "values": [
+            "material",
+            "tool",
+            "fuel",
+            "food",
+            "other"
+          ]
+        }
+      },
+      {
+        "name": "expense_date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "status",
+        "type": "select",
+        "required": false,
+        "options": {
+          "maxSelect": 1,
+          "values": [
+            "pending",
+            "approved",
+            "rejected"
+          ]
+        }
+      }
+    ],
+    "listRule": "employee = @request.auth.id || company = @request.auth.company",
+    "viewRule": "employee = @request.auth.id || company = @request.auth.company",
+    "createRule": "employee = @request.auth.id",
+    "updateRule": "@request.auth.role = \"admin\"",
+    "deleteRule": "employee = @request.auth.id || @request.auth.role = \"admin\""
+  },
+  {
+    "name": "push_subscriptions",
+    "type": "base",
+    "fields": [
+      {
+        "name": "user",
+        "type": "relation",
+        "required": true,
+        "options": {
+          "collectionId": "_pb_users_auth_",
+          "cascadeDelete": true,
+          "maxSelect": 1
+        }
+      },
+      {
+        "name": "company",
+        "type": "relation",
+        "required": false,
+        "options": {
+          "collectionId": "pbc_3866053794",
+          "cascadeDelete": false,
+          "maxSelect": 1
+        }
+      },
+      {
+        "name": "endpoint",
+        "type": "text",
+        "required": true
+      },
+      {
+        "name": "subscription",
+        "type": "json",
+        "required": true
+      }
+    ],
+    "listRule": "user = @request.auth.id || @request.auth.role = \"admin\"",
+    "viewRule": "user = @request.auth.id || @request.auth.role = \"admin\"",
+    "createRule": "user = @request.auth.id",
+    "updateRule": "user = @request.auth.id || @request.auth.role = \"admin\"",
+    "deleteRule": "user = @request.auth.id || @request.auth.role = \"admin\""
+  }
+]

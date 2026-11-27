@@ -1,0 +1,35 @@
+{
+  "_instructions": "Ajoutez ces champs manuellement dans PocketBase Admin (/_/ → Collections). Ne pas importer ce fichier tel quel.",
+  "users": {
+    "collection": "users",
+    "fields_to_add": [
+      {
+        "name": "responsibility_role",
+        "type": "select",
+        "values": [
+          "ouvrier",
+          "responsable_chantier",
+          "contremaitre",
+          "conducteur_travaux",
+          "securite_sst",
+          "autre"
+        ],
+        "default": "ouvrier"
+      },
+      {
+        "name": "job_title",
+        "type": "text",
+        "note": "Si pas déjà présent — métier (électricien, charpentier…)"
+      },
+      {
+        "name": "phone",
+        "type": "text",
+        "note": "Si pas déjà présent"
+      }
+    ]
+  },
+  "safety_documents": {
+    "collection": "safety_documents",
+    "note": "Pas de champ target_role requis — un document par chantier, toutes les signatures regroupées sur le même enregistrement."
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "_readme": "Ce fichier n'est PAS importable dans PocketBase. Utilisez knowify_collections_import.json",
+  "_instructions": "PocketBase Admin → Settings → Import collections → Load from JSON file → knowify_collections_import.json",
+  "_regenerate": "node pocketbase/build-knowify-import.mjs",
+  "_note_ids": "Les relations pointent vers pbc_3866053794 (companies), pbc_2001081480 (sites), ct_soumissions. Si votre instance a d'autres IDs, exportez une collection existante depuis PocketBase pour vérifier, puis éditez build-knowify-import.mjs et regénérez."
+}

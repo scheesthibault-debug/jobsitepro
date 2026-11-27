@@ -1,0 +1,18 @@
+[
+  {
+    "id": "ct_push_subs",
+    "name": "push_subscriptions",
+    "type": "base",
+    "fields": [
+      {"id": "rel_psu_01", "name": "user", "type": "relation", "required": true, "collectionId": "_pb_users_auth_", "cascadeDelete": true, "maxSelect": 1},
+      {"id": "rel_psu_02", "name": "company", "type": "relation", "required": false, "collectionId": "pbc_3866053794", "cascadeDelete": false, "maxSelect": 1},
+      {"id": "txt_psu_03", "name": "endpoint", "type": "text", "required": true},
+      {"id": "json_psu_04", "name": "subscription", "type": "json", "required": true}
+    ],
+    "listRule": "user = @request.auth.id || @request.auth.role = \"admin\"",
+    "viewRule": "user = @request.auth.id || @request.auth.role = \"admin\"",
+    "createRule": "user = @request.auth.id",
+    "updateRule": "user = @request.auth.id || @request.auth.role = \"admin\"",
+    "deleteRule": "user = @request.auth.id || @request.auth.role = \"admin\""
+  }
+]

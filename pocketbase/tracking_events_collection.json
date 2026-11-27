@@ -1,0 +1,17 @@
+{
+  "_instructions": "PocketBase Admin → Collections → New collection « tracking_events » (Base). Champs ci-dessous. Règles API : même accès que time_entries (employé crée pour sa compagnie, patron lit sa compagnie).",
+  "tracking_events": {
+    "name": "tracking_events",
+    "type": "base",
+    "fields": [
+      { "name": "company", "type": "relation", "collection": "companies", "maxSelect": 1, "required": true },
+      { "name": "employee", "type": "relation", "collection": "users", "maxSelect": 1, "required": true },
+      { "name": "time_entry", "type": "relation", "collection": "time_entries", "maxSelect": 1 },
+      { "name": "site", "type": "relation", "collection": "sites", "maxSelect": 1 },
+      { "name": "status", "type": "select", "values": ["onsite", "offsite", "afterhours"], "required": true },
+      { "name": "latitude", "type": "number", "required": true },
+      { "name": "longitude", "type": "number", "required": true },
+      { "name": "day", "type": "text", "required": true, "note": "YYYY-MM-DD — purge le lendemain matin" }
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "_instructions": "PocketBase Admin → Collections → time_entries → New field (×3). Sans ces champs, la position en direct ne se met pas à jour côté patron.",
+  "time_entries": {
+    "collection": "time_entries",
+    "fields_to_add": [
+      {
+        "name": "last_lat",
+        "type": "number",
+        "note": "Dernière latitude (suivi en direct pendant le quart)"
+      },
+      {
+        "name": "last_lng",
+        "type": "number",
+        "note": "Dernière longitude (suivi en direct pendant le quart)"
+      },
+      {
+        "name": "last_ping_at",
+        "type": "date",
+        "note": "Horodatage de la dernière position GPS envoyée"
+      }
+    ]
+  }
+}

@@ -1,0 +1,441 @@
+[
+  {
+    "id": "ct_integration_tokens",
+    "name": "integration_tokens",
+    "type": "base",
+    "listRule": null,
+    "viewRule": null,
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null,
+    "fields": [
+      {
+        "id": "text3208210256",
+        "name": "id",
+        "type": "text",
+        "required": true,
+        "primaryKey": true,
+        "system": true,
+        "hidden": false,
+        "presentable": false,
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "max": 15,
+        "min": 15,
+        "pattern": "^[a-z0-9]+$"
+      },
+      {
+        "id": "rel_it_company",
+        "name": "company",
+        "type": "relation",
+        "required": true,
+        "collectionId": "pbc_3866053794",
+        "cascadeDelete": true,
+        "hidden": false,
+        "presentable": false,
+        "system": false,
+        "maxSelect": 1,
+        "minSelect": 0
+      },
+      {
+        "id": "sel_it_provider",
+        "name": "provider",
+        "type": "select",
+        "required": true,
+        "values": ["quickbooks", "wagepoint"],
+        "maxSelect": 1,
+        "hidden": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "id": "sel_it_env",
+        "name": "environment",
+        "type": "select",
+        "required": true,
+        "values": ["sandbox", "production"],
+        "maxSelect": 1,
+        "hidden": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "id": "txt_it_access",
+        "name": "access_token",
+        "type": "text",
+        "required": false,
+        "hidden": true,
+        "presentable": false,
+        "system": false,
+        "max": 0,
+        "min": 0
+      },
+      {
+        "id": "txt_it_refresh",
+        "name": "refresh_token",
+        "type": "text",
+        "required": false,
+        "hidden": true,
+        "presentable": false,
+        "system": false,
+        "max": 0,
+        "min": 0
+      },
+      {
+        "id": "date_it_expires",
+        "name": "expires_at",
+        "type": "date",
+        "required": false,
+        "hidden": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "id": "txt_it_realm",
+        "name": "realm_id",
+        "type": "text",
+        "required": false,
+        "hidden": false,
+        "presentable": false,
+        "system": false,
+        "max": 0,
+        "min": 0
+      },
+      {
+        "id": "txt_it_qb_name",
+        "name": "external_company_name",
+        "type": "text",
+        "required": false,
+        "hidden": false,
+        "presentable": false,
+        "system": false,
+        "max": 0,
+        "min": 0
+      },
+      {
+        "id": "json_it_meta",
+        "name": "metadata",
+        "type": "json",
+        "required": false,
+        "hidden": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "id": "autodate_it_created",
+        "name": "created",
+        "type": "autodate",
+        "onCreate": true,
+        "onUpdate": false,
+        "hidden": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "id": "autodate_it_updated",
+        "name": "updated",
+        "type": "autodate",
+        "onCreate": true,
+        "onUpdate": true,
+        "hidden": false,
+        "presentable": false,
+        "system": false
+      }
+    ],
+    "indexes": [
+      "CREATE UNIQUE INDEX `idx_integration_tokens_co_provider` ON `integration_tokens` (`company`, `provider`)"
+    ],
+    "system": false
+  },
+  {
+    "id": "ct_integration_mappings",
+    "name": "integration_mappings",
+    "type": "base",
+    "listRule": "@request.auth.role = \"admin\" && company = @request.auth.company",
+    "viewRule": "@request.auth.role = \"admin\" && company = @request.auth.company",
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null,
+    "fields": [
+      {
+        "id": "text3208210256",
+        "name": "id",
+        "type": "text",
+        "required": true,
+        "primaryKey": true,
+        "system": true,
+        "hidden": false,
+        "presentable": false,
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "max": 15,
+        "min": 15,
+        "pattern": "^[a-z0-9]+$"
+      },
+      {
+        "id": "rel_im_company",
+        "name": "company",
+        "type": "relation",
+        "required": true,
+        "collectionId": "pbc_3866053794",
+        "cascadeDelete": true,
+        "hidden": false,
+        "presentable": false,
+        "system": false,
+        "maxSelect": 1,
+        "minSelect": 0
+      },
+      {
+        "id": "sel_im_provider",
+        "name": "provider",
+        "type": "select",
+        "required": true,
+        "values": ["quickbooks", "wagepoint"],
+        "maxSelect": 1,
+        "hidden": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "id": "sel_im_etype",
+        "name": "entity_type",
+        "type": "select",
+        "required": true,
+        "values": [
+          "client",
+          "site",
+          "invoice",
+          "expense",
+          "time_entry",
+          "employee",
+          "payroll_journal"
+        ],
+        "maxSelect": 1,
+        "hidden": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "id": "txt_im_local",
+        "name": "local_id",
+        "type": "text",
+        "required": true,
+        "hidden": false,
+        "presentable": false,
+        "system": false,
+        "max": 0,
+        "min": 0
+      },
+      {
+        "id": "txt_im_external",
+        "name": "external_id",
+        "type": "text",
+        "required": false,
+        "hidden": false,
+        "presentable": false,
+        "system": false,
+        "max": 0,
+        "min": 0
+      },
+      {
+        "id": "sel_im_status",
+        "name": "sync_status",
+        "type": "select",
+        "required": true,
+        "values": ["pending", "synced", "error", "skipped"],
+        "maxSelect": 1,
+        "hidden": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "id": "date_im_synced",
+        "name": "last_synced_at",
+        "type": "date",
+        "required": false,
+        "hidden": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "id": "json_im_raw",
+        "name": "raw_payload",
+        "type": "json",
+        "required": false,
+        "hidden": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "id": "txt_im_error",
+        "name": "last_error",
+        "type": "text",
+        "required": false,
+        "hidden": false,
+        "presentable": false,
+        "system": false,
+        "max": 0,
+        "min": 0
+      },
+      {
+        "id": "autodate_im_created",
+        "name": "created",
+        "type": "autodate",
+        "onCreate": true,
+        "onUpdate": false,
+        "hidden": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "id": "autodate_im_updated",
+        "name": "updated",
+        "type": "autodate",
+        "onCreate": true,
+        "onUpdate": true,
+        "hidden": false,
+        "presentable": false,
+        "system": false
+      }
+    ],
+    "indexes": [
+      "CREATE UNIQUE INDEX `idx_integration_map_unique` ON `integration_mappings` (`company`, `provider`, `entity_type`, `local_id`)"
+    ],
+    "system": false
+  },
+  {
+    "id": "ct_sync_logs",
+    "name": "sync_logs",
+    "type": "base",
+    "listRule": "@request.auth.role = \"admin\" && company = @request.auth.company",
+    "viewRule": "@request.auth.role = \"admin\" && company = @request.auth.company",
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null,
+    "fields": [
+      {
+        "id": "text3208210256",
+        "name": "id",
+        "type": "text",
+        "required": true,
+        "primaryKey": true,
+        "system": true,
+        "hidden": false,
+        "presentable": false,
+        "autogeneratePattern": "[a-z0-9]{15}",
+        "max": 15,
+        "min": 15,
+        "pattern": "^[a-z0-9]+$"
+      },
+      {
+        "id": "rel_sl_company",
+        "name": "company",
+        "type": "relation",
+        "required": true,
+        "collectionId": "pbc_3866053794",
+        "cascadeDelete": true,
+        "hidden": false,
+        "presentable": false,
+        "system": false,
+        "maxSelect": 1,
+        "minSelect": 0
+      },
+      {
+        "id": "sel_sl_provider",
+        "name": "provider",
+        "type": "select",
+        "required": true,
+        "values": ["quickbooks", "wagepoint"],
+        "maxSelect": 1,
+        "hidden": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "id": "sel_sl_direction",
+        "name": "direction",
+        "type": "select",
+        "required": true,
+        "values": ["push", "pull", "webhook"],
+        "maxSelect": 1,
+        "hidden": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "id": "sel_sl_etype",
+        "name": "entity_type",
+        "type": "text",
+        "required": false,
+        "hidden": false,
+        "presentable": false,
+        "system": false,
+        "max": 0,
+        "min": 0
+      },
+      {
+        "id": "txt_sl_local",
+        "name": "local_id",
+        "type": "text",
+        "required": false,
+        "hidden": false,
+        "presentable": false,
+        "system": false,
+        "max": 0,
+        "min": 0
+      },
+      {
+        "id": "txt_sl_external",
+        "name": "external_id",
+        "type": "text",
+        "required": false,
+        "hidden": false,
+        "presentable": false,
+        "system": false,
+        "max": 0,
+        "min": 0
+      },
+      {
+        "id": "sel_sl_status",
+        "name": "status",
+        "type": "select",
+        "required": true,
+        "values": ["pending", "success", "error"],
+        "maxSelect": 1,
+        "hidden": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "id": "txt_sl_message",
+        "name": "message",
+        "type": "text",
+        "required": false,
+        "hidden": false,
+        "presentable": false,
+        "system": false,
+        "max": 0,
+        "min": 0
+      },
+      {
+        "id": "json_sl_payload",
+        "name": "payload",
+        "type": "json",
+        "required": false,
+        "hidden": false,
+        "presentable": false,
+        "system": false
+      },
+      {
+        "id": "autodate_sl_created",
+        "name": "created",
+        "type": "autodate",
+        "onCreate": true,
+        "onUpdate": false,
+        "hidden": false,
+        "presentable": false,
+        "system": false
+      }
+    ],
+    "indexes": [],
+    "system": false
+  }
+]

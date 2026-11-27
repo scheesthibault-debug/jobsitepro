@@ -1,0 +1,32 @@
+[{
+  "id": "ct_expenses",
+  "name": "expenses",
+  "type": "base",
+  "fields": [
+    {"id":"rel_ex_01","name":"employee","type":"relation","required":false,"collectionId":"_pb_users_auth_","cascadeDelete":false,"maxSelect":1},
+    {"id":"rel_ex_02","name":"company","type":"relation","required":false,"collectionId":"pbc_3866053794","cascadeDelete":false,"maxSelect":1},
+    {"id":"rel_ex_03","name":"site","type":"relation","required":false,"collectionId":"pbc_2001081480","cascadeDelete":false,"maxSelect":1},
+    {"id":"file_ex_04","name":"receipt","type":"file","required":false,"maxSelect":1,"maxSize":52428800,"mimeTypes":["image/jpeg","image/png","image/webp","image/heic","application/pdf"]},
+    {"id":"num_ex_05","name":"amount","type":"number","required":false},
+    {"id":"txt_ex_06","name":"description","type":"text","required":false},
+    {"id":"sel_ex_07","name":"category","type":"select","required":false,"values":["material","tool","fuel","food","other"]},
+    {"id":"dat_ex_08","name":"expense_date","type":"date","required":false},
+    {"id":"sel_ex_09","name":"status","type":"select","required":false,"values":["pending","approved","rejected"]},
+    {"id":"bool_ex_10","name":"is_paid","type":"bool","required":false},
+    {"id":"sel_ex_11","name":"fuel_type","type":"select","required":false,"values":["vehicle","site_misc"]},
+    {"id":"txt_ex_12","name":"license_plate","type":"text","required":false},
+    {"id":"num_ex_13","name":"odometer_km","type":"number","required":false},
+    {"id":"txt_ex_14","name":"vendor","type":"text","required":false},
+    {"id":"num_ex_15","name":"tax_amount","type":"number","required":false},
+    {"id":"txt_ex_16","name":"manager_note","type":"text","required":false},
+    {"id":"txt_ex_17","name":"employee_note","type":"text","required":false},
+    {"id":"json_ex_18","name":"ocr_raw","type":"json","required":false},
+    {"id":"sel_ex_19","name":"ocr_confidence","type":"select","required":false,"values":["high","low","manual"]},
+    {"id":"sel_ex_20","name":"payment_method","type":"select","required":false,"values":["unpaid","company_card","employee_pocket"]}
+  ],
+  "listRule": "employee = @request.auth.id || company = @request.auth.company",
+  "viewRule": "employee = @request.auth.id || company = @request.auth.company",
+  "createRule": "employee = @request.auth.id",
+  "updateRule": "@request.auth.role = \"admin\"",
+  "deleteRule": "employee = @request.auth.id || @request.auth.role = \"admin\""
+}]

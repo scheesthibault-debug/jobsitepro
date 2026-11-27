@@ -1,0 +1,18 @@
+{
+  "_instructions": "PocketBase Admin → Collections → companies → New field (×2). Heures de travail normales pour la barre de suivi (Horaires).",
+  "companies": {
+    "collection": "companies",
+    "fields_to_add": [
+      {
+        "name": "work_day_start",
+        "type": "text",
+        "note": "Début journée (HH:MM), ex. 07:00"
+      },
+      {
+        "name": "work_day_end",
+        "type": "text",
+        "note": "Fin journée (HH:MM), ex. 16:30"
+      }
+    ]
+  }
+}

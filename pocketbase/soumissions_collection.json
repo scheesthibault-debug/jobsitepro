@@ -1,0 +1,29 @@
+{
+  "_instructions": "PocketBase → New collection « soumissions » (Base). Règles API : company = @request.auth.company (list/view), create/update/delete = @request.auth.role = \"admin\"",
+  "soumissions": {
+    "name": "soumissions",
+    "type": "base",
+    "fields": [
+      { "name": "company", "type": "relation", "collection": "companies", "maxSelect": 1, "required": true },
+      { "name": "created_by", "type": "relation", "collection": "users", "maxSelect": 1, "required": true },
+      { "name": "numero", "type": "text", "note": "ex. SOU-2026-0042" },
+      { "name": "titre", "type": "text", "required": true },
+      { "name": "client_nom", "type": "text", "required": true },
+      { "name": "client_email", "type": "email" },
+      { "name": "client_tel", "type": "text" },
+      { "name": "adresse", "type": "text" },
+      { "name": "province", "type": "select", "values": ["QC", "ON", "BC", "AB", "MB", "SK", "NB", "NS", "PE", "NL", "NT", "NU", "YT"], "required": true },
+      { "name": "phases", "type": "json", "required": true, "note": "Tableau phases + lignes MO/matériaux" },
+      { "name": "montant_ht", "type": "number", "required": true },
+      { "name": "montant_tps", "type": "number", "required": true },
+      { "name": "montant_tvq", "type": "number" },
+      { "name": "montant_ttc", "type": "number", "required": true },
+      { "name": "statut", "type": "select", "values": ["brouillon", "envoye", "accepte", "refuse", "expire"], "required": true },
+      { "name": "notes", "type": "text" },
+      { "name": "site", "type": "relation", "collection": "sites", "maxSelect": 1 },
+      { "name": "date_soumission", "type": "date" },
+      { "name": "date_expiration", "type": "date" },
+      { "name": "pdf_file", "type": "file", "maxSelect": 1 }
+    ]
+  }
+}

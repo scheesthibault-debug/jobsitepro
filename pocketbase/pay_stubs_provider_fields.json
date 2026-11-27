@@ -1,0 +1,13 @@
+{
+  "_comment": "Ajouter ces champs à la collection pay_stubs existante (Admin PocketBase)",
+  "fields": [
+    {"name": "total_deductions", "type": "number", "required": false},
+    {"name": "calculation_source", "type": "select", "values": ["local_estimate", "mock", "wagepoint", "finch"], "required": false},
+    {"name": "provider_run_id", "type": "text", "required": false},
+    {"name": "provider_payload_hash", "type": "text", "required": false},
+    {"name": "deductions_snapshot", "type": "json", "required": false},
+    {"name": "is_official", "type": "bool", "required": false},
+    {"name": "locked_at", "type": "date", "required": false}
+  ],
+  "rules_note": "Après status=sent : bloquer PATCH côté hook PB (seuls admin système peuvent modifier)."
+}

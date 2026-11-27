@@ -1,0 +1,23 @@
+{
+  "_instructions_fr": "NE PAS coller ce fichier dans Settings → Import collections (format invalide). Suivre POCKETBASE_PAY_PERIOD_SETUP.md",
+  "_instructions_en": "Do NOT paste this file into Settings → Import collections. Follow POCKETBASE_PAY_PERIOD_SETUP.md",
+  "manual_fields": [
+    {
+      "collection": "companies",
+      "name": "pay_period_start",
+      "type": "Date",
+      "required": false
+    },
+    {
+      "collection": "companies",
+      "name": "pay_period_end",
+      "type": "Date",
+      "required": false
+    }
+  ],
+  "api_rules_suggestion": {
+    "companies_listRule": "@request.auth.id != \"\" && id = @request.auth.company",
+    "companies_viewRule": "@request.auth.id != \"\" && id = @request.auth.company",
+    "note": "Permet à l'app employé de lire la période de paie de son entreprise. Les admins gardent leurs règles existantes (combinez avec || si besoin)."
+  }
+}

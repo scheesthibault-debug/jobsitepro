@@ -1,0 +1,69 @@
+[
+  {
+    "id": "ct_payroll_profiles",
+    "name": "employee_payroll_profiles",
+    "type": "base",
+    "fields": [
+      {"id": "rel_pp_01", "name": "employee", "type": "relation", "required": true, "collectionId": "_pb_users_auth_", "cascadeDelete": true, "maxSelect": 1},
+      {"id": "rel_pp_02", "name": "company", "type": "relation", "required": false, "collectionId": "pbc_3866053794", "cascadeDelete": false, "maxSelect": 1},
+      {"id": "num_pp_03", "name": "td1_federal_claim", "type": "number", "required": false},
+      {"id": "num_pp_04", "name": "td1_provincial_claim", "type": "number", "required": false},
+      {"id": "num_pp_05", "name": "tp1015_claim", "type": "number", "required": false},
+      {"id": "dat_pp_06", "name": "td1_federal_date", "type": "date", "required": false},
+      {"id": "dat_pp_07", "name": "td1_provincial_date", "type": "date", "required": false},
+      {"id": "dat_pp_08", "name": "tp1015_date", "type": "date", "required": false},
+      {"id": "txt_pp_09", "name": "bank_transit", "type": "text", "required": false},
+      {"id": "txt_pp_10", "name": "bank_institution", "type": "text", "required": false},
+      {"id": "txt_pp_11", "name": "bank_account", "type": "text", "required": false},
+      {"id": "bool_pp_12", "name": "direct_deposit", "type": "bool", "required": false},
+      {"id": "txt_pp_13", "name": "notes", "type": "text", "required": false}
+    ],
+    "listRule": "employee = @request.auth.id || company = @request.auth.company",
+    "viewRule": "employee = @request.auth.id || company = @request.auth.company",
+    "createRule": "employee = @request.auth.id || @request.auth.role = \"admin\"",
+    "updateRule": "employee = @request.auth.id || @request.auth.role = \"admin\"",
+    "deleteRule": "@request.auth.role = \"admin\""
+  },
+  {
+    "id": "ct_payroll_documents",
+    "name": "payroll_documents",
+    "type": "base",
+    "fields": [
+      {"id": "rel_pd_01", "name": "employee", "type": "relation", "required": true, "collectionId": "_pb_users_auth_", "cascadeDelete": false, "maxSelect": 1},
+      {"id": "rel_pd_02", "name": "company", "type": "relation", "required": false, "collectionId": "pbc_3866053794", "cascadeDelete": false, "maxSelect": 1},
+      {"id": "rel_pd_03", "name": "pay_stub", "type": "relation", "required": false, "collectionId": "ct_paystubs", "cascadeDelete": false, "maxSelect": 1},
+      {"id": "sel_pd_04", "name": "doc_type", "type": "select", "required": true, "values": ["pay_stub", "t4", "rl1", "td1_federal", "td1_provincial", "tp1015", "other"]},
+      {"id": "num_pd_05", "name": "fiscal_year", "type": "number", "required": false},
+      {"id": "dat_pd_06", "name": "period_start", "type": "date", "required": false},
+      {"id": "dat_pd_07", "name": "period_end", "type": "date", "required": false},
+      {"id": "txt_pd_08", "name": "title", "type": "text", "required": false},
+      {"id": "file_pd_09", "name": "file", "type": "file", "required": false, "maxSelect": 1, "maxSize": 15728640},
+      {"id": "num_pd_10", "name": "version", "type": "number", "required": false},
+      {"id": "bool_pd_11", "name": "is_official", "type": "bool", "required": false},
+      {"id": "bool_pd_12", "name": "published", "type": "bool", "required": false}
+    ],
+    "listRule": "employee = @request.auth.id || company = @request.auth.company",
+    "viewRule": "employee = @request.auth.id || company = @request.auth.company",
+    "createRule": "@request.auth.role = \"admin\"",
+    "updateRule": "@request.auth.role = \"admin\"",
+    "deleteRule": "@request.auth.role = \"admin\""
+  },
+  {
+    "id": "ct_payroll_access_log",
+    "name": "payroll_access_log",
+    "type": "base",
+    "fields": [
+      {"id": "rel_pl_01", "name": "user", "type": "relation", "required": true, "collectionId": "_pb_users_auth_", "cascadeDelete": true, "maxSelect": 1},
+      {"id": "rel_pl_02", "name": "company", "type": "relation", "required": false, "collectionId": "pbc_3866053794", "cascadeDelete": false, "maxSelect": 1},
+      {"id": "rel_pl_03", "name": "document", "type": "relation", "required": false, "collectionId": "ct_payroll_documents", "cascadeDelete": true, "maxSelect": 1},
+      {"id": "rel_pl_04", "name": "pay_stub", "type": "relation", "required": false, "collectionId": "ct_paystubs", "cascadeDelete": false, "maxSelect": 1},
+      {"id": "sel_pl_05", "name": "action", "type": "select", "required": true, "values": ["view", "download", "print"]},
+      {"id": "txt_pl_06", "name": "doc_type", "type": "text", "required": false}
+    ],
+    "listRule": "@request.auth.role = \"admin\" || user = @request.auth.id",
+    "viewRule": "@request.auth.role = \"admin\" || user = @request.auth.id",
+    "createRule": "@request.auth.id != \"\"",
+    "updateRule": "@request.auth.role = \"admin\"",
+    "deleteRule": "@request.auth.role = \"admin\""
+  }
+]

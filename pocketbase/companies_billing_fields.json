@@ -1,0 +1,9 @@
+{
+  "_instructions": "PocketBase → collection companies → New field",
+  "fields_to_add": [
+    { "name": "mileage_rate", "type": "number", "note": "Défaut 0.70 $/km" },
+    { "name": "tax_province", "type": "select", "values": ["QC", "ON", "BC", "AB", "MB", "SK", "NB", "NS", "PE", "NL", "NT", "NU", "YT"] },
+    { "name": "soumission_prefix", "type": "text", "note": "ex. SOU" },
+    { "name": "soumission_next_num", "type": "number", "note": "Compteur numérotation" }
+  ]
+}

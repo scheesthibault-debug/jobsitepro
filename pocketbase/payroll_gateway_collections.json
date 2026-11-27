@@ -1,0 +1,43 @@
+[
+  {
+    "id": "ct_payroll_runs",
+    "name": "payroll_runs",
+    "type": "base",
+    "fields": [
+      {"id": "rel_pr_01", "name": "company", "type": "relation", "required": true, "collectionId": "pbc_3866053794", "maxSelect": 1},
+      {"id": "rel_pr_02", "name": "requested_by", "type": "relation", "required": true, "collectionId": "_pb_users_auth_", "maxSelect": 1},
+      {"id": "dat_pr_03", "name": "period_start", "type": "date", "required": true},
+      {"id": "dat_pr_04", "name": "period_end", "type": "date", "required": true},
+      {"id": "sel_pr_05", "name": "status", "type": "select", "required": true, "values": ["processing", "completed", "failed"]},
+      {"id": "txt_pr_06", "name": "provider", "type": "text", "required": false},
+      {"id": "txt_pr_07", "name": "provider_run_id", "type": "text", "required": false},
+      {"id": "dat_pr_08", "name": "started_at", "type": "date", "required": false},
+      {"id": "dat_pr_09", "name": "completed_at", "type": "date", "required": false},
+      {"id": "txt_pr_10", "name": "error_message", "type": "text", "required": false}
+    ],
+    "listRule": "company = @request.auth.company || @request.auth.role = \"admin\"",
+    "viewRule": "company = @request.auth.company || @request.auth.role = \"admin\"",
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": "@request.auth.role = \"admin\""
+  },
+  {
+    "id": "ct_payroll_audit_log",
+    "name": "payroll_audit_log",
+    "type": "base",
+    "fields": [
+      {"id": "rel_al_01", "name": "user", "type": "relation", "required": true, "collectionId": "_pb_users_auth_", "maxSelect": 1},
+      {"id": "rel_al_02", "name": "company", "type": "relation", "required": false, "collectionId": "pbc_3866053794", "maxSelect": 1},
+      {"id": "rel_al_03", "name": "pay_stub", "type": "relation", "required": false, "collectionId": "ct_paystubs", "maxSelect": 1},
+      {"id": "sel_al_04", "name": "action", "type": "select", "required": true, "values": ["calculate_period", "view_stub", "publish_stub", "download_stub", "provider_sync"]},
+      {"id": "txt_al_05", "name": "metadata", "type": "text", "required": false},
+      {"id": "txt_al_06", "name": "ip_hash", "type": "text", "required": false},
+      {"id": "dat_al_07", "name": "created_at", "type": "date", "required": false}
+    ],
+    "listRule": "@request.auth.role = \"admin\"",
+    "viewRule": "@request.auth.role = \"admin\"",
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null
+  }
+]

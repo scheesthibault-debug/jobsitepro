@@ -1,0 +1,9 @@
+{
+  "_instructions": "PocketBase → collection sites → New field",
+  "fields_to_add": [
+    { "name": "soumission", "type": "relation", "collection": "soumissions", "maxSelect": 1 },
+    { "name": "budget_labor", "type": "number" },
+    { "name": "budget_materials", "type": "number" },
+    { "name": "budget_expenses", "type": "number" }
+  ]
+}

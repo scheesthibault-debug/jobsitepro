@@ -1,0 +1,13 @@
+{
+  "_instructions": "PocketBase → collection expenses → New field pour chaque entrée ci-dessous. Ne pas recréer la collection.",
+  "_comptabilite": "amount = total TTC payé sur le reçu (remboursement employé). tax_amount = TPS+TVQ pour export QuickBooks futur. amount_ht = amount - tax_amount (calculé dans l'app).",
+  "fields_to_add": [
+    { "name": "vendor", "type": "text", "note": "Fournisseur (OCR ou saisie)" },
+    { "name": "tax_amount", "type": "number", "note": "Taxes totales (TPS+TVQ)" },
+    { "name": "manager_note", "type": "text", "note": "Note patron (refus / modification)" },
+    { "name": "employee_note", "type": "text", "note": "Note employé optionnelle" },
+    { "name": "ocr_raw", "type": "json", "note": "Réponse brute Claude (audit)" },
+    { "name": "ocr_confidence", "type": "select", "values": ["high", "low", "manual"], "note": "Qualité extraction" }
+  ],
+  "notifications_type": "Ajouter « expense » au select type de la collection notifications"
+}

@@ -1,0 +1,71 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+!**/.env.example
+*.pem
+*.key
+!*.example.key
+vapid.json
+**/vapid.json
+
+# Local / runtime data
+pb_data/
+**/pb_data/
+backups/
+*.log
+logs/
+*.sqlite
+*.db
+.tmp/
+tmp/
+temp/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vscode/
+.idea/
+*.swp
+*~
+
+# Python (if any tooling)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Build / coverage
+dist/
+build/
+coverage/
+.nyc_output/
+*.tsbuildinfo
+
+# Cursor / local agent
+.cursor/
+agent-transcripts/
+
+# Docker local overrides
+docker-compose.override.yml
+
+# Personal / local ops notes (kept locally, excluded from public repo)
+COPIE_SUR_CLE_USB.txt
+ACTIVER-SCAN-IA.txt
+FIX-OCR-SERVEUR.txt
+FIX-SCAN-3-COMMANDES.txt
+RESUME-DEMAIN.md
+SERVEUR_ET_MIGRATION.md
+docs/REPRISE-PROJET-JOBSITEPRO.md
+deployment/ACCES-8888.txt
+deployment/COPIER_VERS_CLE_USB.ps1
+deployment/DEPLOIEMENT_CLE_USB.md
+deployment/DEMO-SERVEUR-EX-PATRON.md
+deployment/SAMBA-USB-MODE-FR.md
+deployment/_test-login.json

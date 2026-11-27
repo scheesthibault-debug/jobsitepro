@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JobsitePro — Gestion de chantiers pour la construction</title>
+<meta name="description" content="Pointage GPS, documents de sécurité, gestion d'équipe et export paie — pour les entreprises de construction. Essai gratuit 30 jours.">
+<link rel="icon" href="jobsitepro-icon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/three@0.134.0/build/three.min.js"></script>
+<style>
+:root{
+  --bg:#0c0e12;
+  --bg2:#131620;
+  --bg3:#1a1e2a;
+  --bg4:#242838;
+  --border:rgba(255,255,255,.08);
+  --border2:rgba(255,255,255,.15);
+  --text:#f0f2f7;
+  --text2:#a0a8c0;
+  --text3:#5a6280;
+  --orange:#EA8C2A;
+  --orange2:#F5A04A;
+  --orange-bg:rgba(234,140,42,.12);
+  --green:#3DB87A;
+  --green-bg:rgba(61,184,122,.1);
+  --red:#E55858;
+  --blue:#4B8EF0;
+  --display:'Barlow Condensed',sans-serif;
+  --body:'DM Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);background:var(--bg);color:var(--text);line-height:1.6;overflow-x:hidden}
+::selection{background:var(--orange);color:#000}
+a{color:inherit;text-decoration:none}
+img{max-width:100%}
+
+/* ── TYPOGRAPHY ─────────────────────────────── */
+.display{font-family:var(--display);font-weight:900;line-height:.95;letter-spacing:-.02em}
+.display-xl{font-size:clamp(52px,8vw,110px)}
+.display-lg{font-size:clamp(38px,5vw,72px)}
+.display-md{font-size:clamp(28px,4vw,50px)}
+.display-sm{font-size:clamp(22px,3vw,36px)}
+.label{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--orange)}
+
+/* ── LAYOUT ─────────────────────────────────── */
+.container{max-width:1160px;margin:0 auto;padding:0 24px}
+section{padding:80px 0}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+@media(max-width:768px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}.hide-mobile{display:none}}
+
+/* ── BUTTONS ─────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 26px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;font-family:var(--body);transition:all .2s}
+.btn-primary{background:var(--orange);color:#000}
+.btn-primary:hover{background:var(--orange2);transform:translateY(-1px)}
+.btn-outline{background:transparent;border:1.5px solid var(--border2);color:var(--text)}
+.btn-outline:hover{border-color:var(--orange);color:var(--orange)}
+.btn-lg{padding:16px 36px;font-size:16px;border-radius:10px}
+.btn-xl{padding:19px 44px;font-size:17px;border-radius:12px}
+
+/* ── NAVBAR ──────────────────────────────────── */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 0;transition:all .3s}
+.nav.scrolled{background:rgba(12,14,18,.9);backdrop-filter:blur(12px);border-bottom:.5px solid var(--border)}
+.nav-inner{display:flex;align-items:center;gap:24px}
+.nav-logo{font-family:var(--display);font-size:22px;font-weight:800;display:flex;align-items:center;gap:10px}
+.nav-logo img{width:36px;height:36px;border-radius:10px;object-fit:contain;flex-shrink:0}
+.nav-logo .brand-name{font-family:var(--display);font-size:22px;font-weight:800}
+.nav-links{display:flex;align-items:center;gap:28px;flex:1;margin-left:40px}
+.nav-links a{font-size:13px;font-weight:500;color:var(--text2);transition:color .15s}
+.nav-links a:hover{color:var(--text)}
+.nav-right{display:flex;align-items:center;gap:10px;margin-left:auto}
+.lang-pill{background:var(--bg3);border:.5px solid var(--border);border-radius:20px;padding:4px 2px;display:flex;gap:2px}
+.lang-pill button{background:none;border:none;cursor:pointer;font-size:11px;font-weight:600;color:var(--text3);padding:3px 9px;border-radius:16px;font-family:var(--body);transition:all .15s}
+.lang-pill button.active{background:var(--orange);color:#000}
+
+/* ── HERO ─────────────────────────────────────── */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding-top:80px;position:relative;overflow:hidden}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(234,140,42,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(234,140,42,.04) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
+.hero-glow{position:absolute;top:-20%;left:-10%;width:60%;height:80%;background:radial-gradient(ellipse,rgba(234,140,42,.08) 0%,transparent 65%);pointer-events:none}
+.hero-glow2{position:absolute;bottom:-10%;right:-5%;width:50%;height:60%;background:radial-gradient(ellipse,rgba(75,142,240,.06) 0%,transparent 65%);pointer-events:none}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--orange-bg);border:.5px solid rgba(234,140,42,.3);border-radius:20px;padding:6px 14px;margin-bottom:24px;font-size:12px;font-weight:600;color:var(--orange)}
+.hero-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--orange);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero-sub{font-size:clamp(16px,2vw,20px);color:var(--text2);max-width:580px;margin:20px 0 36px;line-height:1.6;font-weight:300}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.hero-note{font-size:12px;color:var(--text3);margin-top:14px;display:flex;align-items:center;gap:6px}
+.hero-stats{display:flex;gap:40px;margin-top:56px;padding-top:40px;border-top:.5px solid var(--border)}
+.stat-num{font-family:var(--display);font-size:36px;font-weight:800;color:var(--orange);line-height:1}
+.stat-label{font-size:12px;color:var(--text3);margin-top:3px}
+.hero-visual{position:relative;display:flex;justify-content:center;align-items:center}
+.phone-frame{width:260px;height:520px;border-radius:36px;border:6px solid #2a2d38;background:var(--bg2);overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.05);position:relative;z-index:2}
+.phone-screen{background:#18181b;height:100%;display:flex;flex-direction:column}
+.phone-status{background:#111;padding:8px 16px 4px;display:flex;justify-content:space-between;font-size:10px;font-weight:500;color:#e4e4e7}
+.phone-topbar{background:#1f1f23;padding:10px 13px;border-bottom:.5px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:8px}
+.phone-title{font-size:13px;font-weight:600;color:#e4e4e7;flex:1}
+.phone-av{width:26px;height:26px;border-radius:50%;background:#1c3a5c;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#85B7EB}
+.phone-content{flex:1;padding:11px;display:flex;flex-direction:column;gap:8px}
+.phone-greeting{background:linear-gradient(135deg,#1c3a5c,#1f1f23);border:.5px solid rgba(55,138,221,.2);border-radius:10px;padding:11px}
+.phone-site{background:#1f1f23;border:.5px solid rgba(255,255,255,.07);border-radius:10px}
+.phone-clocked{padding:9px 11px;display:flex;align-items:center;gap:7px;background:rgba(90,158,30,.08)}
+.phone-pulse{width:7px;height:7px;border-radius:50%;background:#5a9e1e;animation:blink 1.5s infinite;flex-shrink:0}
+.phone-btn{margin:0 11px 11px;border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:center;gap:7px;font-size:14px;font-weight:700;background:#e24b4a;color:white}
+.phone-nav{background:#1f1f23;border-top:.5px solid rgba(255,255,255,.07);padding:8px 0;display:flex}
+.phone-tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:8px;color:#71717a}
+.phone-tab.active{color:#EA8C2A}
+.phone-tab i{font-size:16px}
+.desktop-frame{position:absolute;left:-80px;bottom:-40px;width:380px;border-radius:12px;border:4px solid #2a2d38;background:var(--bg2);box-shadow:0 30px 60px rgba(0,0,0,.5);overflow:hidden;z-index:1}
+.desktop-bar{background:#131620;padding:8px 10px;display:flex;align-items:center;gap:6px;border-bottom:.5px solid rgba(255,255,255,.05)}
+.dot{width:8px;height:8px;border-radius:50%}
+.desktop-url{flex:1;margin-left:6px;background:rgba(255,255,255,.05);border-radius:4px;padding:3px 8px;font-size:9px;color:var(--text3);font-family:monospace}
+.desktop-content{display:flex;height:140px;overflow:hidden}
+.desktop-sidebar{width:80px;background:#131620;border-right:.5px solid rgba(255,255,255,.05);padding:6px 0;flex-shrink:0}
+.ds-item{padding:4px 6px;font-size:8px;color:#71717a;display:flex;align-items:center;gap:4px;border-left:2px solid transparent}
+.ds-item.active{color:#EA8C2A;border-left-color:#EA8C2A;background:rgba(234,140,42,.08)}
+.ds-item i{font-size:11px}
+.desktop-main{flex:1;padding:8px;overflow:hidden}
+.kpi-mini{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:6px}
+.kpi-card-mini{background:#1f1f23;border-radius:5px;padding:5px 6px}
+.kpi-num-mini{font-size:13px;font-weight:700}
+.kpi-lbl-mini{font-size:7px;color:#71717a}
+
+/* ── LOGOS/SOCIAL PROOF ──────────────────────── */
+.proof{background:var(--bg2);border-top:.5px solid var(--border);border-bottom:.5px solid var(--border);padding:28px 0}
+.proof-label{font-size:11px;font-weight:500;color:var(--text3);letter-spacing:.08em;text-transform:uppercase}
+.proof-logos{display:flex;align-items:center;gap:40px;flex-wrap:wrap}
+.proof-logo{font-family:var(--display);font-size:18px;font-weight:800;color:var(--text3);letter-spacing:.05em;opacity:.5}
+
+/* ── FEATURES ─────────────────────────────────── */
+.features{background:var(--bg)}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:.5px solid var(--border);border-radius:16px;overflow:hidden}
+.feat-card{background:var(--bg);padding:28px;transition:background .2s}
+.feat-card:hover{background:var(--bg2)}
+.feat-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;font-size:20px}
+.feat-title{font-family:var(--display);font-size:20px;font-weight:700;margin-bottom:6px}
+.feat-desc{font-size:13px;color:var(--text2);line-height:1.6}
+.feat-tag{display:inline-flex;align-items:center;gap:4px;margin-top:10px;font-size:10px;font-weight:600;color:var(--orange);letter-spacing:.06em}
+@media(max-width:768px){.feat-grid{grid-template-columns:1fr}}
+
+/* ── HOW IT WORKS ─────────────────────────────── */
+.how{background:var(--bg2)}
+.step-row{display:grid;grid-template-columns:60px 1fr;gap:20px;align-items:start;margin-bottom:32px}
+.step-num{font-family:var(--display);font-size:48px;font-weight:900;color:var(--orange);opacity:.3;line-height:1}
+.step-title{font-family:var(--display);font-size:22px;font-weight:700;margin-bottom:4px}
+.step-desc{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* ── PRICING ──────────────────────────────────── */
+.pricing{background:var(--bg)}
+.price-card{background:var(--bg2);border:.5px solid var(--border2);border-radius:20px;padding:36px;position:relative;overflow:hidden}
+.price-card.featured{border-color:var(--orange);background:linear-gradient(135deg,rgba(234,140,42,.05),var(--bg2))}
+.price-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--orange),var(--orange2))}
+.price-badge{position:absolute;top:20px;right:20px;background:var(--orange);color:#000;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px}
+.price-amount{font-family:var(--display);font-size:64px;font-weight:900;line-height:1;color:var(--text)}
+.price-unit{font-size:14px;color:var(--text2);margin-top:3px}
+.price-features{list-style:none;margin:20px 0 24px;display:flex;flex-direction:column;gap:9px}
+.price-features li{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text2)}
+.price-features li i{color:var(--green);font-size:15px;flex-shrink:0;margin-top:1px}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:960px;margin:0 auto}
+.pricing-grid .price-card{padding:28px 24px}
+.pricing-grid .price-amount{font-size:48px}
+.price-per{font-size:14px;color:var(--orange);font-weight:600;margin:8px 0 4px}
+.price-example{font-size:12px;color:var(--text3);margin-bottom:16px;min-height:32px}
+.price-formula{font-size:11px;color:var(--text3);margin-top:6px}
+@media(max-width:900px){.pricing-grid{grid-template-columns:1fr;max-width:420px}}
+
+/* ── COMPARISON ───────────────────────────────── */
+.compare{background:var(--bg2)}
+.cmp-table{width:100%;border-collapse:collapse;font-size:13px}
+.cmp-table th{padding:12px 16px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);border-bottom:.5px solid var(--border)}
+.cmp-table th:nth-child(2){text-align:center;color:var(--text)}
+.cmp-table th:nth-child(3){text-align:center;color:var(--orange)}
+.cmp-table td{padding:10px 16px;border-bottom:.5px solid var(--border);color:var(--text2)}
+.cmp-table td:nth-child(2),.cmp-table td:nth-child(3){text-align:center}
+.cmp-table tr:last-child td{border-bottom:none}
+.cmp-table tr:hover td{background:var(--bg3)}
+.yes-icon{color:var(--green);font-size:16px}
+.no-icon{color:var(--red);font-size:16px;opacity:.6}
+.partial-icon{color:var(--orange);font-size:12px}
+.cmp-wrap{background:var(--bg);border:.5px solid var(--border);border-radius:16px;overflow:hidden}
+
+/* ── TESTIMONIALS ─────────────────────────────── */
+.testimonials{background:var(--bg)}
+.testi-card{background:var(--bg2);border:.5px solid var(--border);border-radius:16px;padding:24px;position:relative}
+.testi-card::before{content:'"';position:absolute;top:12px;left:20px;font-size:60px;font-family:var(--display);color:var(--orange);opacity:.2;line-height:1}
+.testi-text{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:16px;padding-top:8px}
+.testi-av{width:38px;height:38px;border-radius:50%;background:var(--orange-bg);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--orange);font-size:13px;flex-shrink:0}
+.stars{color:var(--orange);font-size:12px;margin-bottom:8px}
+
+/* ── CTA SECTION ──────────────────────────────── */
+.cta-section{background:linear-gradient(135deg,rgba(234,140,42,.08),rgba(75,142,240,.05));border-top:.5px solid var(--border);border-bottom:.5px solid var(--border)}
+.cta-grid{background:var(--bg2);border:.5px solid rgba(234,140,42,.2);border-radius:24px;padding:56px;text-align:center;position:relative;overflow:hidden}
+.cta-glow{position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(234,140,42,.1) 0%,transparent 60%);pointer-events:none}
+.cta-checklist{display:flex;flex-wrap:wrap;justify-content:center;gap:16px 32px;margin:28px 0}
+.cta-check{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--text2)}
+.cta-check i{color:var(--green);font-size:15px}
+
+/* ── FOOTER ───────────────────────────────────── */
+footer{background:var(--bg2);border-top:.5px solid var(--border);padding:48px 0 28px}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr;gap:48px;margin-bottom:40px}
+.footer-brand{font-family:var(--display);font-size:20px;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.footer-brand img{width:32px;height:32px;border-radius:8px;object-fit:contain;flex-shrink:0}
+.footer-brand .brand-name{font-family:var(--display);font-size:20px;font-weight:800}
+.footer-desc{font-size:13px;color:var(--text3);line-height:1.7;max-width:280px;margin-bottom:16px}
+.footer-col h4{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-bottom:14px}
+.footer-col a{display:block;font-size:13px;color:var(--text3);margin-bottom:7px;transition:color .15s}
+.footer-col a:hover{color:var(--orange)}
+.footer-bottom{padding-top:24px;border-top:.5px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--text3);flex-wrap:wrap;gap:10px}
+@media(max-width:768px){.footer-top{grid-template-columns:1fr}}
+
+/* ── SECTION HEADINGS ─────────────────────────── */
+.section-head{text-align:center;max-width:680px;margin:0 auto 52px}
+.section-head .label{margin-bottom:10px}
+.section-head p{font-size:16px;color:var(--text2);margin-top:12px;font-weight:300}
+
+/* ── BADGE / CHIPS ────────────────────────────── */
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:600}
+.badge-g{background:var(--green-bg);color:var(--green)}
+.badge-o{background:var(--orange-bg);color:var(--orange)}
+.badge-new{background:rgba(75,142,240,.12);color:var(--blue)}
+
+/* ── DIVIDER ──────────────────────────────────── */
+.divider{height:.5px;background:var(--border);margin:0}
+
+/* ── ANIMATIONS ───────────────────────────────── */
+@keyframes spin{to{transform:rotate(360deg)}}
+.fade-up{opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s}
+.fade-up.visible{opacity:1;transform:none}
+
+/* ── HERO 3D CANVAS ────────────────────────────── */
+#hero-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.hero>.container{position:relative;z-index:1}
+
+/* ── STICKY NAV SCROLL ──────────────────────────── */
+@keyframes slideDown{from{transform:translateY(-100%)}to{transform:translateY(0)}}
+
+/* ── CONTACT MODAL ─────────────────────────────── */
+.contact-overlay{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.72);opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
+.contact-overlay.open{opacity:1;visibility:visible}
+.contact-card{width:100%;max-width:480px;background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:32px 28px 28px;position:relative;box-shadow:0 24px 80px rgba(0,0,0,.55);transform:translateY(12px);transition:transform .25s}
+.contact-overlay.open .contact-card{transform:translateY(0)}
+.contact-close{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:var(--bg3);color:var(--text2);cursor:pointer;font-size:18px;line-height:1;display:flex;align-items:center;justify-content:center}
+.contact-close:hover{color:var(--text);border-color:var(--border2)}
+.contact-title{font-family:var(--display);font-size:clamp(26px,4vw,34px);font-weight:800;line-height:1.1;margin-bottom:22px;color:var(--text)}
+.contact-title em{font-style:italic;color:var(--orange)}
+.contact-field{margin-bottom:16px}
+.contact-field label{display:block;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:6px}
+.contact-field input,.contact-field textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--text);font-family:var(--body);outline:none;transition:border-color .15s}
+.contact-field input:focus,.contact-field textarea:focus{border-color:var(--orange)}
+.contact-field textarea{min-height:120px;resize:vertical}
+.contact-hp{position:absolute;left:-9999px;opacity:0;height:0;width:0;overflow:hidden}
+.contact-submit{width:100%;margin-top:8px;justify-content:center}
+.contact-status{font-size:12px;text-align:center;margin-top:12px;min-height:18px;color:var(--text3)}
+.contact-status.ok{color:var(--green)}
+.contact-status.err{color:var(--red)}
+.contact-lead{font-size:13px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;text-align:center}
+.contact-email-box{text-align:center}
+.contact-email-link{display:inline-block;font-size:17px;font-weight:600;color:var(--orange);word-break:break-all;margin-bottom:4px}
+.contact-email-link:hover{color:var(--orange2);text-decoration:underline}
+.contact-hint{font-size:12px;color:var(--text2);margin-top:14px;text-align:center;line-height:1.5}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="main-nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <img src="jobsitepro-icon.png" alt="">
+        <span class="brand-name">JobsitePro</span>
+      </a>
+      <div class="nav-links hide-mobile">
+        <a href="#features" id="nav-features">Fonctionnalités</a>
+        <a href="#how" id="nav-how">Comment ça marche</a>
+        <a href="#pricing" id="nav-pricing">Prix</a>
+        <a href="#compare" id="nav-compare">Comparaison</a>
+        <a href="contact.html" id="nav-contact">Contact</a>
+      </div>
+      <div class="nav-right">
+        <div class="lang-pill">
+          <button class="active" onclick="setLang('fr')" id="lbtn-fr">FR</button>
+          <button onclick="setLang('en')" id="lbtn-en">EN</button>
+        </div>
+        <a href="/patron/" class="btn btn-outline hide-mobile" style="padding:8px 16px;font-size:13px" id="nav-login">Connexion</a>
+        <a href="#pricing" class="btn btn-primary" style="padding:9px 18px;font-size:13px" id="nav-cta">Essai gratuit</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="container">
+    <div class="grid-2">
+      <div>
+        <div class="hero-eyebrow">
+          <span class="hero-eyebrow-dot"></span>
+          <span id="hero-badge">Fait pour les entreprises de construction</span>
+        </div>
+        <h1 class="display display-xl" id="hero-h1">GÉREZ<br>VOS<br><span style="color:var(--orange)">CHANTIERS</span></h1>
+        <p class="hero-sub" id="hero-sub">Pointage GPS, documents de sécurité, gestion d'équipe et export paie — tout ce dont votre entreprise de construction a besoin. En français et en anglais.</p>
+        <div class="hero-ctas">
+        <a href="/patron/?register=1&plan=standard" class="btn btn-primary btn-xl" id="hero-cta1"><i class="ti ti-rocket" style="font-size:16px"></i> <span id="hero-cta1-text">Démarrer gratuitement</span></a>
+          <a href="#features" class="btn btn-outline btn-xl" id="hero-cta2">Voir les fonctionnalités →</a>
+        </div>
+        <div class="hero-note">
+          <i class="ti ti-circle-check" style="color:var(--green);font-size:14px"></i>
+          <span id="hero-note">Essai 30 jours · Sans carte de crédit · Configuration en 10 minutes</span>
+        </div>
+        <div class="hero-stats">
+          <div><div class="stat-num" id="stat1">59$</div><div class="stat-label" id="stat1-l">à partir de / mois</div></div>
+          <div><div class="stat-num" id="stat2">∞</div><div class="stat-label" id="stat2-l">Chantiers illimités</div></div>
+          <div><div class="stat-num" id="stat3">100%</div><div class="stat-label" id="stat3-l">Vos données au Canada</div></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div style="position:relative;width:340px;height:560px">
+          <!-- Desktop frame (behind) -->
+          <div class="desktop-frame">
+            <div class="desktop-bar">
+              <div class="dot" style="background:#e55858"></div>
+              <div class="dot" style="background:#EF9F27"></div>
+              <div class="dot" style="background:#3DB87A"></div>
+              <div class="desktop-url">jobsitepro.example.com/patron/</div>
+            </div>
+            <div class="desktop-content">
+              <div class="desktop-sidebar">
+                <div class="ds-item active"><i class="ti ti-layout-dashboard"></i><span style="font-size:7px">Dashboard</span></div>
+                <div class="ds-item"><i class="ti ti-building-skyscraper"></i><span style="font-size:7px" id="ds-chantiers">Chantiers</span></div>
+                <div class="ds-item"><i class="ti ti-clock"></i><span style="font-size:7px" id="ds-pointages">Pointages</span></div>
+                <div class="ds-item"><i class="ti ti-cash"></i><span style="font-size:7px" id="ds-paie">Paie</span></div>
+                <div class="ds-item"><i class="ti ti-map-pin"></i><span style="font-size:7px" id="ds-carte">Carte</span></div>
+              </div>
+              <div class="desktop-main">
+                <div class="kpi-mini">
+                  <div class="kpi-card-mini"><div class="kpi-num-mini" style="color:#EA8C2A">6</div><div class="kpi-lbl-mini" id="ds-kpi-1">Chantiers actifs</div></div>
+                  <div class="kpi-card-mini"><div class="kpi-num-mini" style="color:#378ADD">12</div><div class="kpi-lbl-mini" id="ds-kpi-2">Sur terrain</div></div>
+                  <div class="kpi-card-mini"><div class="kpi-num-mini" style="color:#e24b4a">2</div><div class="kpi-lbl-mini" id="ds-kpi-3">Docs à signer</div></div>
+                  <div class="kpi-card-mini"><div class="kpi-num-mini" style="color:#5a9e1e">98%</div><div class="kpi-lbl-mini" id="ds-kpi-4">GPS actif</div></div>
+                </div>
+                <div style="height:3px;background:#27272a;border-radius:2px;margin-bottom:6px"><div style="width:65%;height:100%;background:#EA8C2A;border-radius:2px"></div></div>
+                <div style="font-size:7px;color:#71717a" id="ds-site-label">Résidences du Parc · 65%</div>
+              </div>
+            </div>
+          </div>
+          <!-- Phone frame (front) -->
+          <div class="phone-frame" style="position:absolute;right:-20px;top:0">
+            <div class="phone-screen">
+              <div class="phone-status"><span>9:41</span><span>●●● 5G 🔋</span></div>
+              <div class="phone-topbar">
+                <span class="phone-title" id="ph-title">Accueil</span>
+                <span style="width:7px;height:7px;border-radius:50%;background:#5a9e1e;animation:blink 1.5s infinite"></span>
+                <div class="phone-av">MT</div>
+              </div>
+              <div class="phone-content">
+                <div class="phone-greeting">
+                  <div style="font-size:12px;font-weight:600;color:#e4e4e7" id="ph-greeting">Bonjour, Marc 👷</div>
+                  <div style="font-size:10px;color:#85B7EB" id="ph-site">Lundi · Résidences du Parc</div>
+                </div>
+                <div class="phone-site">
+                  <div class="phone-clocked">
+                    <div class="phone-pulse"></div>
+                    <div><div style="font-size:11px;font-weight:600;color:#e4e4e7" id="ph-clocked">Sur chantier 08:02 → maintenant</div><div style="font-size:9px;color:#5a9e1e" id="ph-gps">2h14 · GPS confirmé</div></div>
+                  </div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+                  <div style="background:#1f1f23;border-radius:8px;padding:10px;text-align:center"><div style="font-size:18px;margin-bottom:3px">📋</div><div style="font-size:9px;font-weight:600;color:#e4e4e7" id="ph-docs">Documents</div><div style="font-size:8px;background:#e24b4a22;color:#e24b4a;padding:1px 4px;border-radius:10px;margin-top:2px">2</div></div>
+                  <div style="background:#1f1f23;border-radius:8px;padding:10px;text-align:center"><div style="font-size:18px;margin-bottom:3px">📷</div><div style="font-size:9px;font-weight:600;color:#e4e4e7" id="ph-photos">Photos</div></div>
+                </div>
+                <div class="phone-btn"><i class="ti ti-logout" style="font-size:14px"></i> <span id="ph-btn">POINTER SORTIE</span></div>
+              </div>
+              <div class="phone-nav">
+                <div class="phone-tab active"><i class="ti ti-home"></i><span id="ph-nav-1">Accueil</span></div>
+                <div class="phone-tab"><i class="ti ti-clock"></i><span id="ph-nav-2">Pointer</span></div>
+                <div class="phone-tab"><i class="ti ti-file-certificate"></i><span id="ph-nav-3">Docs</span></div>
+                <div class="phone-tab"><i class="ti ti-dots"></i><span id="ph-nav-4">Plus</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<div class="proof">
+  <div class="container">
+    <div style="display:flex;align-items:center;gap:40px;flex-wrap:wrap">
+      <span class="proof-label" id="proof-label">Conçu pour</span>
+      <div class="proof-logos">
+        <span class="proof-logo" id="proof-logo-1">CONSTRUCTION</span>
+        <span class="proof-logo" id="proof-logo-2">RÉNOVATION</span>
+        <span class="proof-logo" id="proof-logo-3">EXCAVATION</span>
+        <span class="proof-logo" id="proof-logo-4">ÉLECTRICITÉ</span>
+        <span class="proof-logo" id="proof-logo-5">PLOMBERIE</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAIN POINT BANNER -->
+<div style="background:linear-gradient(90deg,var(--bg2),var(--bg3));border-top:.5px solid var(--border);border-bottom:.5px solid var(--border);padding:32px 0">
+  <div class="container" style="text-align:center">
+    <p class="display display-sm" id="pain-text">Les outils génériques ne comprennent pas le terrain.<br><span style="color:var(--orange)">JobsitePro a été bâti pour ça.</span></p>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="section-head">
+      <div class="label" id="feat-label">Fonctionnalités</div>
+      <h2 class="display display-lg" id="feat-h2">TOUT CE DONT<br>VOUS AVEZ BESOIN</h2>
+      <p id="feat-sub">Conçu pour les entreprises de construction sur le terrain — pointage, sécurité, équipe et finances en un seul endroit.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card"><div class="feat-icon" style="background:rgba(61,184,122,.1)"><i class="ti ti-map-pin" style="color:#3DB87A;font-size:20px"></i></div><h3 class="feat-title" id="f1-t">Pointage GPS</h3><p class="feat-desc" id="f1-d">Vos employés pointent depuis leur téléphone. Le GPS confirme leur présence sur le chantier. Carte live pour voir tout le monde en temps réel.</p><div class="feat-tag"><i class="ti ti-device-mobile" style="font-size:10px"></i><span id="f1-tag">iOS + Android · Hors ligne</span></div></div>
+      <div class="feat-card"><div class="feat-icon" style="background:rgba(234,140,42,.1)"><i class="ti ti-file-certificate" style="color:#EA8C2A;font-size:20px"></i></div><h3 class="feat-title" id="f2-t">Documents de sécurité</h3><p class="feat-desc" id="f2-d">Envoyez des formulaires SST à signer électroniquement depuis le téléphone. Rappels automatiques. Pas de pointage sans signature.</p><div class="feat-tag"><i class="ti ti-shield-check" style="font-size:10px"></i><span id="f2-tag">Sécurité · Signature électronique</span></div></div>
+      <div class="feat-card"><div class="feat-icon" style="background:rgba(226,75,74,.1)"><i class="ti ti-alert-triangle" style="color:#e24b4a;font-size:20px"></i></div><h3 class="feat-title" id="f3-t">Incidents</h3><p class="feat-desc" id="f3-d">Vos employés déclarent les incidents depuis le terrain avec photos et GPS. Le patron est notifié instantanément.</p><div class="feat-tag"><i class="ti ti-bell" style="font-size:10px"></i><span id="f3-tag">Notification push immédiate</span></div></div>
+      <div class="feat-card"><div class="feat-icon" style="background:rgba(127,119,221,.1)"><i class="ti ti-cash" style="color:#7F77DD;font-size:20px"></i></div><h3 class="feat-title" id="f4-t">Export paie</h3><p class="feat-desc" id="f4-d">Heures régulières et supplémentaires compilées depuis le pointage. Export Excel Wagepoint. Aperçu brut et net approximatif.</p><div class="feat-tag"><i class="ti ti-download" style="font-size:10px"></i><span id="f4-tag">Wagepoint · Heures supp.</span></div></div>
+      <div class="feat-card"><div class="feat-icon" style="background:rgba(55,138,221,.1)"><i class="ti ti-calendar" style="color:#378ADD;font-size:20px"></i></div><h3 class="feat-title" id="f5-t">Horaires &amp; Congés</h3><p class="feat-desc" id="f5-d">Planifiez les shifts par employé et par chantier. Gérez les demandes de congé directement dans l'app. Alertes automatiques.</p><div class="feat-tag"><i class="ti ti-users" style="font-size:10px"></i><span id="f5-tag">Gestion équipe complète</span></div></div>
+      <div class="feat-card"><div class="feat-icon" style="background:rgba(29,158,117,.1)"><i class="ti ti-car" style="color:#1D9E75;font-size:20px"></i></div><h3 class="feat-title" id="f6-t">Kilométrage &amp; Facturation</h3><p class="feat-desc" id="f6-d">Les employés loguent leurs km depuis le téléphone. Coût par chantier calculé automatiquement. Alertes dépassement de budget.</p><div class="feat-tag"><i class="ti ti-receipt" style="font-size:10px"></i><span id="f6-tag">Job costing · Dépassement budget</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ACCOUNTANT SECTION -->
+<section style="background:var(--bg2);border-top:.5px solid var(--border);border-bottom:.5px solid var(--border);padding:80px 0" id="comptable">
+  <div class="container">
+    <div class="grid-2" style="gap:60px">
+      <div>
+        <div class="label" id="acct-label">Pour votre comptable</div>
+        <h2 class="display display-lg" style="margin:12px 0 16px" id="acct-h2">HEURES<br>PRÊTES<br><span style="color:var(--orange)">À EXPORTER</span></h2>
+        <p style="font-size:15px;color:var(--text2);line-height:1.7;font-weight:300;margin-bottom:24px" id="acct-sub">JobsitePro compile les heures pointées sur le chantier et génère un export Excel pour Wagepoint ou votre service de paie. Aucun bulletin officiel ni calcul d'impôt dans l'app.</p>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:28px">
+          <div style="display:flex;align-items:flex-start;gap:12px">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(61,184,122,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-clock" style="color:#3DB87A;font-size:17px"></i></div>
+            <div><div style="font-size:14px;font-weight:600;margin-bottom:2px" id="acct-f1t">Heures depuis le pointage GPS</div><div style="font-size:13px;color:var(--text2)" id="acct-f1d">Heures régulières et supplémentaires calculées automatiquement à partir des pointages terrain (règle 40 h / semaine).</div></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:12px">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(127,119,221,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-file-spreadsheet" style="color:#7F77DD;font-size:17px"></i></div>
+            <div><div style="font-size:14px;font-weight:600;margin-bottom:2px" id="acct-f2t">Export Excel &amp; Wagepoint</div><div style="font-size:13px;color:var(--text2)" id="acct-f2d">Fichiers .xlsx générés sur votre appareil : colonnes heures, brut approximatif, format compatible Wagepoint.</div></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:12px">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(55,138,221,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-calculator" style="color:#4B8EF0;font-size:17px"></i></div>
+            <div><div style="font-size:14px;font-weight:600;margin-bottom:2px" id="acct-f3t">Aperçu brut / net approximatif</div><div style="font-size:13px;color:var(--text2)" id="acct-f3d">Estimation indicative selon le taux horaire — votre service de paie (Wagepoint, comptable) produit les bulletins officiels et les retenues.</div></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:12px">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(234,140,42,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-shield-lock" style="color:#EA8C2A;font-size:17px"></i></div>
+            <div><div style="font-size:14px;font-weight:600;margin-bottom:2px" id="acct-f4t">Données minimales</div><div style="font-size:13px;color:var(--text2)" id="acct-f4d">Les montants de paie ne sont pas stockés sur nos serveurs après export. Vous gardez le contrôle de vos archives.</div></div>
+          </div>
+        </div>
+        <div style="background:rgba(234,140,42,.08);border:.5px solid rgba(234,140,42,.2);border-radius:12px;padding:14px 16px;font-size:12px;color:var(--text2);line-height:1.6" id="acct-disclaimer">
+          <strong style="color:var(--orange)">Note :</strong> JobsitePro <em>ne remplace pas</em> un service de paie. Il exporte les heures travaillées — votre comptable ou Wagepoint calcule les retenues et émet les bulletins officiels.
+        </div>
+      </div>
+      <div>
+        <div style="background:var(--bg);border:.5px solid var(--border2);border-radius:16px;overflow:hidden">
+          <div style="background:var(--bg2);padding:12px 16px;border-bottom:.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+            <span style="font-size:12px;font-weight:600" id="acct-stub-title">Export paie — heures travaillées</span>
+            <span style="font-size:10px;background:rgba(75,142,240,.12);color:#4B8EF0;padding:2px 8px;border-radius:20px" id="acct-period-badge">Période 14 jours</span>
+          </div>
+          <div style="padding:14px 16px;border-bottom:.5px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+            <div style="background:var(--bg2);border-radius:8px;padding:10px;text-align:center"><div style="font-size:18px;font-weight:700">5</div><div style="font-size:9px;color:var(--text3)" id="acct-stat1">Employés</div></div>
+            <div style="background:var(--bg2);border-radius:8px;padding:10px;text-align:center"><div style="font-size:18px;font-weight:700">240h</div><div style="font-size:9px;color:var(--text3)" id="acct-stat2">H. régulières</div></div>
+            <div style="background:var(--bg2);border-radius:8px;padding:10px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--orange)">7 200$</div><div style="font-size:9px;color:var(--text3)" id="acct-stat3">Brut approx.</div></div>
+            <div style="background:var(--bg2);border-radius:8px;padding:10px;text-align:center"><div style="font-size:18px;font-weight:700;color:var(--green)">4 980$</div><div style="font-size:9px;color:var(--text3)" id="acct-stat4">Net approx.</div></div>
+          </div>
+          <div style="padding:12px 16px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:11px;color:var(--text3)">
+              <span id="acct-period">2026-06-08 → 2026-06-21</span>
+              <span style="display:flex;gap:6px">
+                <span style="background:var(--orange);color:#000;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600">Excel heures</span>
+                <span style="background:var(--bg3);padding:2px 8px;border-radius:6px;font-size:10px">Wagepoint</span>
+              </span>
+            </div>
+            <table style="width:100%;font-size:11px;border-collapse:collapse">
+              <thead><tr style="color:var(--text3);text-align:left">
+                <th style="padding:6px 4px" id="acct-th-emp">Employé</th>
+                <th style="padding:6px 4px" id="acct-th-clocked">Pointé</th>
+                <th style="padding:6px 4px" id="acct-th-reg">H. Rég</th>
+                <th style="padding:6px 4px" id="acct-th-ot">H. Supp</th>
+                <th style="padding:6px 4px" id="acct-th-gross">Brut approx</th>
+                <th style="padding:6px 4px" id="acct-th-net">Net approx</th>
+              </tr></thead>
+              <tbody style="color:var(--text2)">
+                <tr style="border-top:.5px solid var(--border)"><td style="padding:8px 4px">Marc T.</td><td>48.03</td><td>48.03</td><td>0.00</td><td style="color:var(--orange)">1 440.90$</td><td style="color:var(--green)">996.76$</td></tr>
+                <tr style="border-top:.5px solid var(--border)"><td style="padding:8px 4px">Julie R.</td><td>40.00</td><td>40.00</td><td>0.00</td><td style="color:var(--orange)">1 000.00$</td><td style="color:var(--green)">692.00$</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="padding:12px 16px;border-top:.5px solid var(--border);display:flex;gap:8px;flex-wrap:wrap">
+            <span style="font-size:11px;background:var(--bg3);padding:4px 10px;border-radius:20px;color:var(--text3)">📄 Excel heures</span>
+            <span style="font-size:11px;background:var(--bg3);padding:4px 10px;border-radius:20px;color:var(--text3)">📊 Wagepoint</span>
+            <span style="font-size:11px;background:var(--bg3);padding:4px 10px;border-radius:20px;color:var(--text3)">📋 Registre .xlsx</span>
+            <span style="font-size:11px;background:var(--bg3);padding:4px 10px;border-radius:20px;color:var(--text3)">📦 Intégrations</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="container">
+    <div class="section-head">
+      <div class="label" id="how-label">Démarrage</div>
+      <h2 class="display display-lg" id="how-h2">OPÉRATIONNEL<br>EN 10 MINUTES</h2>
+    </div>
+    <div class="grid-2">
+      <div>
+        <div style="margin-bottom:12px"><span class="badge badge-o" id="how-patron-badge">Pour le patron</span></div>
+        <div class="step-row"><div class="step-num">01</div><div><div class="step-title" id="s1-t">Créer votre compte entreprise</div><p class="step-desc" id="s1-d">Entrez le nom de votre entreprise, votre courriel et un mot de passe. Votre espace est créé instantanément — essai 30 jours gratuit, sans carte de crédit.</p></div></div>
+        <div class="step-row"><div class="step-num">02</div><div><div class="step-title" id="s2-t">Ajouter vos chantiers</div><p class="step-desc" id="s2-d">Créez vos chantiers avec adresse GPS, budget et rayon de géofencing. Assignez vos employés.</p></div></div>
+        <div class="step-row"><div class="step-num">03</div><div><div class="step-title" id="s3-t">Inviter vos employés</div><p class="step-desc" id="s3-d">Partagez un lien QR ou une URL unique. Vos employés s'inscrivent eux-mêmes en 30 secondes et sont automatiquement liés à votre entreprise.</p></div></div>
+      </div>
+      <div>
+        <div style="margin-bottom:12px"><span class="badge badge-g" id="how-emp-badge">Pour l'employé</span></div>
+        <div class="step-row"><div class="step-num">01</div><div><div class="step-title" id="s4-t">Scanner le QR ou ouvrir le lien</div><p class="step-desc" id="s4-d">L'employé ouvre le lien sur son téléphone. Il voit directement "Rejoindre [Votre Entreprise]" — aucune configuration technique.</p></div></div>
+        <div class="step-row"><div class="step-num">02</div><div><div class="step-title" id="s5-t">Créer son compte en 30 secondes</div><p class="step-desc" id="s5-d">Nom, courriel, mot de passe — c'est tout. Il est automatiquement lié à votre entreprise. Aucun code d'invitation compliqué.</p></div></div>
+        <div class="step-row"><div class="step-num">03</div><div><div class="step-title" id="s6-t">Installer l'app sur son téléphone</div><p class="step-desc" id="s6-d">Chrome → "Ajouter à l'écran d'accueil" → icône sur le téléphone. Fonctionne comme une vraie app, sur iPhone et Android.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="container">
+    <div class="section-head">
+      <div class="label" id="price-label">Tarifs</div>
+      <h2 class="display display-lg" id="price-h2">FORFAIT FIXE<br>+ 8 $ / EMPLOYÉ</h2>
+      <p id="price-sub">Payez seulement pour les employés actifs qui pointent. Le patron n'est pas compté.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="label" id="plan-t-name">Standard</div>
+        <div style="display:flex;align-items:flex-end;gap:6px;margin:12px 0 0">
+          <div class="price-amount" id="plan-t-fix">59$</div>
+          <div style="margin-bottom:10px;font-size:14px;color:var(--text2)" id="plan-t-mo">/ mois</div>
+        </div>
+        <div class="price-per" id="plan-t-per">+ 8 $ / employé actif</div>
+        <div class="price-example" id="plan-t-ex">ex. 10 employés = 139 $/mois</div>
+        <ul class="price-features" id="plan-t-feats">
+          <li><i class="ti ti-check"></i><span>Pointage GPS + géofencing</span></li>
+          <li><i class="ti ti-check"></i><span>Documents SST + signatures</span></li>
+          <li><i class="ti ti-check"></i><span>Carte live, photos, incidents</span></li>
+          <li><i class="ti ti-check"></i><span>Chantiers &amp; pointages illimités</span></li>
+        </ul>
+        <a href="/patron/?register=1&plan=standard" class="btn btn-secondary btn-lg" style="width:100%;justify-content:center" id="plan-t-cta">Essai gratuit 30 jours</a>
+      </div>
+      <div class="price-card featured">
+        <div class="price-badge" id="price-best">Populaire</div>
+        <div class="label" id="plan-p-name">Premium</div>
+        <div style="display:flex;align-items:flex-end;gap:6px;margin:12px 0 0">
+          <div class="price-amount" id="plan-p-fix">79$</div>
+          <div style="margin-bottom:10px;font-size:14px;color:var(--text2)" id="plan-p-mo">/ mois</div>
+        </div>
+        <div class="price-per" id="plan-p-per">+ 8 $ / employé actif</div>
+        <div class="price-example" id="plan-p-ex">ex. 10 employés = 159 $/mois</div>
+        <ul class="price-features" id="plan-p-feats">
+          <li><i class="ti ti-check"></i><span>Tout le forfait Standard</span></li>
+          <li><i class="ti ti-check"></i><span>Scan reçus OCR (employé)</span></li>
+          <li><i class="ti ti-check"></i><span>Dépenses &amp; approbation patron</span></li>
+          <li><i class="ti ti-check"></i><span>Kilométrage</span></li>
+        </ul>
+        <a href="/patron/?register=1&plan=premium" class="btn btn-primary btn-lg" style="width:100%;justify-content:center" id="plan-p-cta">Essai gratuit 30 jours</a>
+      </div>
+      <div class="price-card">
+        <div class="label" id="plan-e-name">Élite</div>
+        <div style="display:flex;align-items:flex-end;gap:6px;margin:12px 0 0">
+          <div class="price-amount" id="plan-e-fix">139$</div>
+          <div style="margin-bottom:10px;font-size:14px;color:var(--text2)" id="plan-e-mo">/ mois</div>
+        </div>
+        <div class="price-per" id="plan-e-per">+ 8 $ / employé actif</div>
+        <div class="price-example" id="plan-e-ex">ex. 10 employés = 219 $/mois</div>
+        <ul class="price-features" id="plan-e-feats">
+          <li><i class="ti ti-check"></i><span>Tout le forfait Premium</span></li>
+          <li><i class="ti ti-check"></i><span>CRM, soumissions, coûts chantier</span></li>
+          <li><i class="ti ti-check"></i><span>Intégrations comptables</span></li>
+          <li><i class="ti ti-check"></i><span>Rapports &amp; rentabilité</span></li>
+        </ul>
+        <a href="/patron/?register=1&plan=elite" class="btn btn-secondary btn-lg" style="width:100%;justify-content:center" id="plan-e-cta">Essai gratuit 30 jours</a>
+      </div>
+    </div>
+    <p style="font-size:12px;color:var(--text3);text-align:center;margin-top:24px" id="price-note">Sans carte de crédit · Annulable en tout temps · Prix en CAD</p>
+    <p class="price-formula" style="text-align:center;margin-top:8px" id="price-formula">Formule : forfait fixe + (8 $ × nombre d'employés actifs)</p>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section class="compare" id="compare">
+  <div class="container">
+    <div class="section-head">
+      <div class="label" id="cmp-label">Comparaison</div>
+      <h2 class="display display-lg" id="cmp-h2">JOBSITEPRO<br>VS AUTRE SOLUTION</h2>
+    </div>
+    <div class="cmp-wrap">
+      <table class="cmp-table">
+        <thead><tr><th id="cmp-th1">Fonctionnalité</th><th id="cmp-th-other">Autre solution</th><th style="color:var(--orange)" id="cmp-th-us">JobsitePro</th></tr></thead>
+        <tbody>
+          <tr><td id="c1">Pointage GPS</td><td><i class="ti ti-check yes-icon"></i></td><td><i class="ti ti-check yes-icon"></i></td></tr>
+          <tr><td id="c2">Géofencing</td><td><span class="partial-icon" id="c2-qb">Selon forfait</span></td><td><i class="ti ti-check yes-icon"></i></td></tr>
+          <tr><td id="c3">Documents SST / Sécurité</td><td><i class="ti ti-x no-icon"></i></td><td><i class="ti ti-check yes-icon"></i></td></tr>
+          <tr><td id="c4">Signature électronique SST</td><td><i class="ti ti-x no-icon"></i></td><td><i class="ti ti-check yes-icon"></i></td></tr>
+          <tr><td id="c5">Déclaration incidents</td><td><i class="ti ti-x no-icon"></i></td><td><i class="ti ti-check yes-icon"></i></td></tr>
+          <tr><td id="c6">Kilométrage</td><td><span class="partial-icon" id="c6-qb">Selon forfait</span></td><td><i class="ti ti-check yes-icon"></i></td></tr>
+          <tr><td id="c7">Horaires / Shifts</td><td><i class="ti ti-check yes-icon"></i></td><td><i class="ti ti-check yes-icon"></i></td></tr>
+          <tr><td id="c8">100% en français</td><td><span class="partial-icon" id="c8-qb">Partiel</span></td><td><i class="ti ti-check yes-icon"></i></td></tr>
+          <tr><td id="c9">Données au Canada</td><td><i class="ti ti-x no-icon"></i></td><td><i class="ti ti-check yes-icon"></i></td></tr>
+          <tr><td id="c10">Prix pour 10 employés (Premium)</td><td><span style="color:var(--text3);font-size:13px" id="c10-other">Variable</span></td><td><span style="color:var(--green);font-weight:600">159$/mois</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="container">
+    <div class="section-head">
+      <div class="label" id="testi-label">Témoignages</div>
+      <h2 class="display display-lg" id="testi-h2">CE QUE DIS<br>NOS CLIENTS</h2>
+    </div>
+    <div class="grid-3">
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text" id="t1">"Avant JobsitePro, je passais 2 heures par semaine à faire les feuilles de temps manuellement. Maintenant c'est automatique. Mes gars pointent depuis le chantier et j'ai tout dans mon dashboard."</p>
+        <div style="display:flex;align-items:center;gap:10px"><div class="testi-av">JB</div><div><div style="font-size:13px;font-weight:600" id="t1-name">Jean Beaumont</div><div style="font-size:11px;color:var(--text3)" id="t1-co">Construction Beaumont, Montréal</div></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text" id="t2">"La partie documents de sécurité a changé notre vie. Mes contremaîtres signent les formulaires sur leur téléphone. Plus de paperasse qui traîne sur les chantiers."</p>
+        <div style="display:flex;align-items:center;gap:10px"><div class="testi-av">ML</div><div><div style="font-size:13px;font-weight:600" id="t2-name">Marie Lavoie</div><div style="font-size:11px;color:var(--text3)" id="t2-co">Excavation Lavoie</div></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="stars">★★★★★</div>
+        <p class="testi-text" id="t3">"On avait un autre logiciel mais ce n'était pas adapté au chantier. JobsitePro est simple, en français, et regroupe tout ce dont on a besoin sur le terrain."</p>
+        <div style="display:flex;align-items:center;gap:10px"><div class="testi-av">SP</div><div><div style="font-size:13px;font-weight:600" id="t3-name">Steve Pelletier</div><div style="font-size:11px;color:var(--text3)" id="t3-co">Réno Pelletier, Laval</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-grid">
+      <div class="cta-glow"></div>
+      <div class="label" id="cta-label">Commencer maintenant</div>
+      <h2 class="display display-lg" style="margin:12px 0" id="cta-h2">PRÊT À<br>SIMPLIFIER<br>VOS CHANTIERS ?</h2>
+      <div class="cta-checklist">
+        <div class="cta-check"><i class="ti ti-check"></i><span id="ck1">Essai 30 jours gratuit</span></div>
+        <div class="cta-check"><i class="ti ti-check"></i><span id="ck2">Aucune carte de crédit</span></div>
+        <div class="cta-check"><i class="ti ti-check"></i><span id="ck3">Configuration en 10 minutes</span></div>
+        <div class="cta-check"><i class="ti ti-check"></i><span id="ck4">Support inclus</span></div>
+      </div>
+      <a href="/patron/?register=1&plan=standard" class="btn btn-primary btn-xl" style="font-size:17px" id="cta-btn"><i class="ti ti-rocket" style="font-size:18px"></i> <span id="cta-btn-text">Créer mon compte gratuitement</span></a>
+      <p style="font-size:12px;color:var(--text3);margin-top:14px" id="cta-sub">Forfait fixe + 8 $/employé actif après l'essai · Annulable en tout temps</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand">
+          <img src="jobsitepro-icon.png" alt="">
+          <span class="brand-name">JobsitePro</span>
+        </div>
+        <p class="footer-desc" id="footer-desc">La solution de gestion de chantiers pour la construction. Simple, bilingue, pensée pour le terrain.</p>
+        <div style="display:flex;gap:10px">
+          <span class="badge badge-g">Sécurité ✓</span>
+          <span class="badge badge-o">GPS ✓</span>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4 id="footer-product">Produit</h4>
+        <a href="#features" id="fl1">Fonctionnalités</a>
+        <a href="#pricing" id="fl2">Tarifs</a>
+        <a href="#compare" id="fl3">Comparaison</a>
+        <a href="presentation.html" id="fl4">Présentation</a>
+      </div>
+      <div class="footer-col">
+        <h4 id="footer-company">Contact</h4>
+        <a href="contact.html" id="fl5">Nous contacter</a>
+        <a href="privacy.html" id="fl6">Politique de confidentialité</a>
+        <a href="terms.html" id="fl7">Conditions d'utilisation</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span id="footer-copy">© 2025 JobsitePro. Tous droits réservés.</span>
+      <span id="footer-host">Données hébergées au Canada 🇨🇦</span>
+    </div>
+  </div>
+</footer>
+
+<!-- CONTACT MODAL -->
+<div class="contact-overlay" id="contact-modal" aria-hidden="true" role="dialog" aria-labelledby="contact-title">
+  <div class="contact-card">
+    <button type="button" class="contact-close" id="contact-close" aria-label="Fermer">×</button>
+    <h2 class="contact-title" id="contact-title">
+      <span id="contact-title-prefix">Discutons de </span><em id="contact-title-em">votre projet</em>
+    </h2>
+    <form id="contact-form" novalidate>
+      <div class="contact-hp" aria-hidden="true">
+        <label for="contact-website">Website</label>
+        <input type="text" id="contact-website" name="website" tabindex="-1" autocomplete="off">
+      </div>
+      <div class="contact-field">
+        <label for="contact-name" data-contact-label="name">Nom</label>
+        <input type="text" id="contact-name" name="name" autocomplete="name" data-contact-ph="name" placeholder="Votre nom">
+      </div>
+      <div class="contact-field">
+        <label for="contact-email" data-contact-label="email">Courriel *</label>
+        <input type="email" id="contact-email" name="email" required autocomplete="email" data-contact-ph="email" placeholder="Votre adresse courriel">
+      </div>
+      <div class="contact-field">
+        <label for="contact-message" data-contact-label="message">Message *</label>
+        <textarea id="contact-message" name="message" required data-contact-ph="message" placeholder="Comment pouvons-nous vous aider ?"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary btn-lg contact-submit" id="contact-submit">
+        <span data-contact-label="send">Envoyer votre demande</span> <i class="ti ti-arrow-right" style="font-size:16px"></i>
+      </button>
+      <p class="contact-status" id="contact-status"></p>
+    </form>
+  </div>
+</div>
+
+<script src="js/contact-form.js"></script>
+<script>
+// ── LANGUAGE ─────────────────────────────────────────────────
+const CONTENT = {
+  fr:{
+    'hero-badge':'Fait pour les entreprises de construction',
+    'hero-h1':'GÉREZ<br>VOS<br><span style="color:var(--orange)">CHANTIERS</span>',
+    'hero-sub':'Pointage GPS, documents de sécurité, gestion d\'équipe et export paie — tout ce dont votre entreprise de construction a besoin. En français et en anglais.',
+    'hero-cta1-text':'Démarrer gratuitement','hero-cta2':'Voir les fonctionnalités →',
+    'hero-note':'Essai 30 jours · Sans carte de crédit · Configuration en 10 minutes',
+    'stat1':'59$','stat1-l':'à partir de / mois','stat2':'∞','stat2-l':'Chantiers illimités','stat3':'100%','stat3-l':'Vos données au Canada',
+    'proof-label':'Conçu pour',
+    'proof-logo-1':'CONSTRUCTION','proof-logo-2':'RÉNOVATION','proof-logo-3':'EXCAVATION','proof-logo-4':'ÉLECTRICITÉ','proof-logo-5':'PLOMBERIE',
+    'ph-title':'Accueil','ph-greeting':'Bonjour, Marc 👷','ph-site':'Lundi · Résidences du Parc',
+    'ph-clocked':'Sur chantier 08:02 → maintenant','ph-gps':'2h14 · GPS confirmé',
+    'ph-docs':'Documents','ph-photos':'Photos','ph-btn':'POINTER SORTIE',
+    'ph-nav-1':'Accueil','ph-nav-2':'Pointer','ph-nav-3':'Docs','ph-nav-4':'Plus',
+    'ds-chantiers':'Chantiers','ds-pointages':'Pointages','ds-paie':'Paie','ds-carte':'Carte',
+    'ds-kpi-1':'Chantiers actifs','ds-kpi-2':'Sur terrain','ds-kpi-3':'Docs à signer','ds-kpi-4':'GPS actif',
+    'ds-site-label':'Résidences du Parc · 65%',
+    'pain-text':'Les outils génériques ne comprennent pas le terrain.<br><span style="color:var(--orange)">JobsitePro a été bâti pour ça.</span>',
+    'feat-label':'Fonctionnalités','feat-h2':'TOUT CE DONT<br>VOUS AVEZ BESOIN',
+    'feat-sub':'Conçu pour les entreprises de construction sur le terrain — pointage, sécurité, équipe et finances en un seul endroit.',
+    'f1-t':'Pointage GPS','f1-d':'Vos employés pointent depuis leur téléphone. GPS confirme la présence. Carte live temps réel.','f1-tag':'iOS + Android · Hors ligne',
+    'f2-t':'Documents de sécurité','f2-d':'Envoyez des formulaires SST à signer électroniquement. Rappels auto. Pas de pointage sans signature.','f2-tag':'Sécurité · Signature électronique',
+    'f3-t':'Incidents','f3-d':'Déclarations terrain avec photos + GPS. Patron notifié instantanément.','f3-tag':'Notification push immédiate',
+    'f4-t':'Export paie','f4-d':'Heures régulières + supplémentaires compilées depuis le pointage. Export Excel Wagepoint. Aperçu brut/net approximatif.','f4-tag':'Wagepoint · Heures supp.',
+    'f5-t':'Horaires & Congés','f5-d':'Planifiez les shifts. Gérez les demandes de congé. Alertes automatiques.','f5-tag':'Gestion équipe complète',
+    'f6-t':'Kilométrage & Facturation','f6-d':'Employés loguent leurs km. Coût par chantier automatique. Alertes budget.','f6-tag':'Job costing · Dépassement budget',
+    'how-label':'Démarrage','how-h2':'OPÉRATIONNEL<br>EN 10 MINUTES',
+    'how-patron-badge':'Pour le patron','how-emp-badge':'Pour l\'employé',
+    's1-t':'Créer votre compte entreprise','s1-d':'Entrez le nom de votre entreprise, courriel et mot de passe. Essai 30 jours gratuit, sans carte.',
+    's2-t':'Ajouter vos chantiers','s2-d':'Créez vos chantiers avec adresse GPS, budget et géofencing. Assignez vos employés.',
+    's3-t':'Inviter vos employés','s3-d':'Partagez un lien QR unique. Vos employés s\'inscrivent en 30 secondes.',
+    's4-t':'Scanner le QR ou ouvrir le lien','s4-d':'Ouvre l\'app directement sur son téléphone — aucune configuration technique.',
+    's5-t':'Créer son compte en 30 secondes','s5-d':'Nom, courriel, mot de passe — c\'est tout. Lié automatiquement à votre entreprise.',
+    's6-t':'Installer l\'app','s6-d':'Chrome → "Ajouter à l\'écran d\'accueil" → icône sur le téléphone. iPhone et Android.',
+    'acct-label':'Pour votre comptable','acct-h2':'HEURES<br>PRÊTES<br><span style="color:var(--orange)">À EXPORTER</span>',
+    'acct-sub':'JobsitePro compile les heures pointées sur le chantier et génère un export Excel pour Wagepoint ou votre service de paie. Aucun bulletin officiel ni calcul d\'impôt dans l\'app.',
+    'acct-f1t':'Heures depuis le pointage GPS','acct-f1d':'Heures régulières et supplémentaires calculées automatiquement à partir des pointages terrain (règle 40 h / semaine).',
+    'acct-f2t':'Export Excel & Wagepoint','acct-f2d':'Fichiers .xlsx générés sur votre appareil : colonnes heures, brut approximatif, format compatible Wagepoint.',
+    'acct-f3t':'Aperçu brut / net approximatif','acct-f3d':'Estimation indicative selon le taux horaire — votre service de paie produit les bulletins officiels et les retenues.',
+    'acct-f4t':'Données minimales','acct-f4d':'Les montants de paie ne sont pas stockés sur nos serveurs après export. Vous gardez le contrôle de vos archives.',
+    'acct-disclaimer':'Note : JobsitePro ne remplace pas un service de paie. Il exporte les heures travaillées — votre comptable ou Wagepoint calcule les retenues et émet les bulletins officiels.',
+    'acct-stub-title':'Export paie — heures travaillées','acct-period-badge':'Période 14 jours',
+    'acct-stat1':'Employés','acct-stat2':'H. régulières','acct-stat3':'Brut approx.','acct-stat4':'Net approx.',
+    'acct-period':'2026-06-08 → 2026-06-21',
+    'acct-th-emp':'Employé','acct-th-clocked':'Pointé','acct-th-reg':'H. Rég','acct-th-ot':'H. Supp','acct-th-gross':'Brut approx','acct-th-net':'Net approx',
+    'price-label':'Tarifs','price-h2':'FORFAIT FIXE<br>+ 8 $ / EMPLOYÉ',
+    'price-sub':'Payez seulement pour les employés actifs qui pointent. Le patron n\'est pas compté.',
+    'price-best':'Populaire',
+    'plan-t-name':'Standard','plan-t-fix':'59$','plan-t-mo':'/ mois','plan-t-per':'+ 8 $ / employé actif','plan-t-ex':'ex. 10 employés = 139 $/mois','plan-t-cta':'Essai gratuit 30 jours',
+    'plan-p-name':'Premium','plan-p-fix':'79$','plan-p-mo':'/ mois','plan-p-per':'+ 8 $ / employé actif','plan-p-ex':'ex. 10 employés = 159 $/mois','plan-p-cta':'Essai gratuit 30 jours',
+    'plan-e-name':'Élite','plan-e-fix':'139$','plan-e-mo':'/ mois','plan-e-per':'+ 8 $ / employé actif','plan-e-ex':'ex. 10 employés = 219 $/mois','plan-e-cta':'Essai gratuit 30 jours',
+    'price-note':'Sans carte de crédit · Annulable en tout temps · Prix en CAD',
+    'price-formula':'Formule : forfait fixe + (8 $ × nombre d\'employés actifs)',
+    'cmp-label':'Comparaison','cmp-h2':'JOBSITEPRO<br>VS AUTRE SOLUTION','cmp-th1':'Fonctionnalité','cmp-th-other':'Autre solution','cmp-th-us':'JobsitePro',
+    'c1':'Pointage GPS','c2':'Géofencing','c2-qb':'Selon forfait','c3':'Documents SST / Sécurité',
+    'c4':'Signature électronique SST','c5':'Déclaration incidents','c6':'Kilométrage','c6-qb':'Selon forfait',
+    'c7':'Horaires / Shifts','c8':'100% en français','c8-qb':'Partiel','c9':'Données au Canada','c10':'Prix pour 10 employés (Premium)','c10-other':'Variable',
+    'testi-label':'Témoignages','testi-h2':'CE QUE DIS<br>NOS CLIENTS',
+    't1':'"Avant JobsitePro, je passais 2 heures par semaine à faire les feuilles de temps manuellement. Maintenant c\'est automatique."',
+    't1-name':'Jean Beaumont','t1-co':'Construction Beaumont, Montréal',
+    't2':'"La partie documents de sécurité a changé notre vie. Mes contremaîtres signent les formulaires sur leur téléphone. Plus de paperasse sur les chantiers."',
+    't2-name':'Marie Lavoie','t2-co':'Excavation Lavoie',
+    't3':'"On avait un autre logiciel mais ce n\'était pas adapté au chantier. JobsitePro est simple, en français, et regroupe tout ce dont on a besoin sur le terrain."',
+    't3-name':'Steve Pelletier','t3-co':'Réno Pelletier, Laval',
+    'cta-label':'Commencer maintenant','cta-h2':'PRÊT À<br>SIMPLIFIER<br>VOS CHANTIERS ?',
+    'ck1':'Essai 30 jours gratuit','ck2':'Aucune carte de crédit','ck3':'Configuration en 10 minutes','ck4':'Support inclus',
+    'cta-btn-text':'Créer mon compte gratuitement','cta-sub':'Forfait fixe + 8 $/employé actif après l\'essai · Annulable en tout temps',
+    'footer-desc':'La solution de gestion de chantiers pour la construction. Simple, bilingue, pensée pour le terrain.',
+    'footer-product':'Produit','footer-company':'Contact',
+    'fl1':'Fonctionnalités','fl2':'Tarifs','fl3':'Comparaison','fl4':'Présentation','fl5':'Nous contacter','fl6':'Confidentialité',
+    'footer-copy':'© 2025 JobsitePro. Tous droits réservés.','footer-host':'Données hébergées au Canada 🇨🇦',
+    'nav-features':'Fonctionnalités','nav-how':'Comment ça marche','nav-pricing':'Prix','nav-compare':'Comparaison','nav-contact':'Contact',
+    'nav-login':'Connexion','nav-cta':'Essai gratuit',
+  },
+  en:{
+    'hero-badge':'Built for construction companies',
+    'hero-h1':'MANAGE<br>YOUR<br><span style="color:var(--orange)">JOB SITES</span>',
+    'hero-sub':'GPS time tracking, safety documents, team management and payroll export — everything your construction company needs. In French and English.',
+    'hero-cta1-text':'Start for free','hero-cta2':'See features →',
+    'hero-note':'30-day free trial · No credit card · Set up in 10 minutes',
+    'stat1':'$59','stat1-l':'starting / month','stat2':'∞','stat2-l':'Unlimited job sites','stat3':'100%','stat3-l':'Your data in Canada',
+    'proof-label':'Built for',
+    'proof-logo-1':'CONSTRUCTION','proof-logo-2':'RENOVATION','proof-logo-3':'EXCAVATION','proof-logo-4':'ELECTRICAL','proof-logo-5':'PLUMBING',
+    'ph-title':'Home','ph-greeting':'Hello, Marc 👷','ph-site':'Monday · Résidences du Parc',
+    'ph-clocked':'On site 08:02 → now','ph-gps':'2h14 · GPS confirmed',
+    'ph-docs':'Documents','ph-photos':'Photos','ph-btn':'CLOCK OUT',
+    'ph-nav-1':'Home','ph-nav-2':'Clock','ph-nav-3':'Docs','ph-nav-4':'More',
+    'ds-chantiers':'Job Sites','ds-pointages':'Timesheets','ds-paie':'Payroll','ds-carte':'Map',
+    'ds-kpi-1':'Active job sites','ds-kpi-2':'On site','ds-kpi-3':'Docs to sign','ds-kpi-4':'GPS active',
+    'ds-site-label':'Résidences du Parc · 65%',
+    'pain-text':'Generic tools don\'t understand the field.<br><span style="color:var(--orange)">JobsitePro was built for it.</span>',
+    'feat-label':'Features','feat-h2':'EVERYTHING<br>YOU NEED',
+    'feat-sub':'Built for construction companies on the job site — time tracking, safety, team and finances in one place.',
+    'f1-t':'GPS Time Tracking','f1-d':'Employees clock in from their phone. GPS confirms presence on site. Live map in real time.','f1-tag':'iOS + Android · Offline',
+    'f2-t':'Safety Documents','f2-d':'Send safety forms for e-signature from phones. Auto reminders. No clock-in without signing.','f2-tag':'Safety · E-signature',
+    'f3-t':'Incidents','f3-d':'Field reporting with photos + GPS. Manager notified instantly.','f3-tag':'Instant push notification',
+    'f4-t':'Payroll export','f4-d':'Regular and overtime hours compiled from clock-ins. Wagepoint Excel export. Approximate gross/net preview.','f4-tag':'Wagepoint · Overtime',
+    'f5-t':'Schedules & Time Off','f5-d':'Plan shifts by employee and site. Manage time-off requests. Automatic alerts.','f5-tag':'Complete team management',
+    'f6-t':'Mileage & Billing','f6-d':'Employees log km from phone. Job cost per site calculated automatically. Budget alerts.','f6-tag':'Job costing · Budget alerts',
+    'how-label':'Getting Started','how-h2':'UP AND RUNNING<br>IN 10 MINUTES',
+    'how-patron-badge':'For the owner','how-emp-badge':'For the employee',
+    's1-t':'Create your company account','s1-d':'Enter your company name, email and password. 30-day free trial, no credit card.',
+    's2-t':'Add your job sites','s2-d':'Create job sites with GPS address, budget and geofencing radius. Assign employees.',
+    's3-t':'Invite your employees','s3-d':'Share a unique QR link. Employees sign up in 30 seconds.',
+    's4-t':'Scan QR or open the link','s4-d':'Opens the app directly on their phone — no technical setup needed.',
+    's5-t':'Create account in 30 seconds','s5-d':'Name, email, password — that\'s it. Automatically linked to your company.',
+    's6-t':'Install the app','s6-d':'Chrome → "Add to home screen" → app icon on phone. iPhone and Android.',
+    'acct-label':'For your accountant','acct-h2':'HOURS<br>READY<br><span style="color:var(--orange)">TO EXPORT</span>',
+    'acct-sub':'JobsitePro compiles clocked hours from the field and generates an Excel export for Wagepoint or your payroll service. No official pay stubs or tax calculation in the app.',
+    'acct-f1t':'Hours from GPS time tracking','acct-f1d':'Regular and overtime hours calculated automatically from field clock-ins (40 h / week rule).',
+    'acct-f2t':'Excel & Wagepoint export','acct-f2d':'.xlsx files generated on your device: hour columns, approximate gross, Wagepoint-compatible format.',
+    'acct-f3t':'Approximate gross / net preview','acct-f3d':'Indicative estimate based on hourly rate — your payroll service produces official stubs and deductions.',
+    'acct-f4t':'Minimal data retention','acct-f4d':'Payroll amounts are not stored on our servers after export. You keep control of your archives.',
+    'acct-disclaimer':'Note: JobsitePro does not replace a payroll service. It exports worked hours — your accountant or Wagepoint calculates deductions and issues official pay stubs.',
+    'acct-stub-title':'Payroll export — worked hours','acct-period-badge':'14-day period',
+    'acct-stat1':'Employees','acct-stat2':'Reg. hours','acct-stat3':'Approx. gross','acct-stat4':'Approx. net',
+    'acct-period':'2026-06-08 → 2026-06-21',
+    'acct-th-emp':'Employee','acct-th-clocked':'Clocked','acct-th-reg':'Reg H','acct-th-ot':'OT H','acct-th-gross':'Approx gross','acct-th-net':'Approx net',
+    'price-label':'Pricing','price-h2':'FIXED PLAN<br>+ $8 / EMPLOYEE',
+    'price-sub':'Pay only for active employees who clock in. Owner account is free.',
+    'price-best':'Popular',
+    'plan-t-name':'Standard','plan-t-fix':'$59','plan-t-mo':'/ month','plan-t-per':'+ $8 / active employee','plan-t-ex':'e.g. 10 employees = $139/mo','plan-t-cta':'30-day free trial',
+    'plan-p-name':'Premium','plan-p-fix':'$79','plan-p-mo':'/ month','plan-p-per':'+ $8 / active employee','plan-p-ex':'e.g. 10 employees = $159/mo','plan-p-cta':'30-day free trial',
+    'plan-e-name':'Elite','plan-e-fix':'$139','plan-e-mo':'/ month','plan-e-per':'+ $8 / active employee','plan-e-ex':'e.g. 10 employees = $219/mo','plan-e-cta':'30-day free trial',
+    'price-note':'No credit card · Cancel anytime · Prices in CAD',
+    'price-formula':'Formula: fixed plan + ($8 × number of active employees)',
+    'cmp-label':'Comparison','cmp-h2':'JOBSITEPRO<br>VS OTHER TOOLS','cmp-th1':'Feature','cmp-th-other':'Other solution','cmp-th-us':'JobsitePro',
+    'c1':'GPS time tracking','c2':'Geofencing','c2-qb':'Plan-dependent','c3':'Safety / SST documents',
+    'c4':'Safety e-signature','c5':'Incident reporting','c6':'Mileage tracking','c6-qb':'Plan-dependent',
+    'c7':'Schedules / Shifts','c8':'100% in French','c8-qb':'Partial','c9':'Data in Canada','c10':'Price for 10 employees (Premium)','c10-other':'Varies',
+    'testi-label':'Testimonials','testi-h2':'WHAT OUR<br>CLIENTS SAY',
+    't1':'"Before JobsitePro, I spent 2 hours a week doing timesheets manually. Now it\'s automatic."',
+    't1-name':'Jean Beaumont','t1-co':'Construction Beaumont, Montreal',
+    't2':'"The safety document feature changed everything. Our foremen sign forms on their phone. No more paperwork."',
+    't2-name':'Marie Lavoie','t2-co':'Excavation Lavoie',
+    't3':'"We used another tool but it wasn\'t built for the field. JobsitePro is simple, bilingual, and brings together everything we need on site."',
+    't3-name':'Steve Pelletier','t3-co':'Réno Pelletier, Laval',
+    'cta-label':'Get started','cta-h2':'READY TO<br>SIMPLIFY YOUR<br>JOB SITES?',
+    'ck1':'30-day free trial','ck2':'No credit card','ck3':'Set up in 10 minutes','ck4':'Support included',
+    'cta-btn-text':'Create my free account','cta-sub':'Fixed plan + $8/active employee after trial · Cancel anytime',
+    'footer-desc':'The job site management solution for construction. Simple, bilingual, built for the field.',
+    'footer-product':'Product','footer-company':'Contact',
+    'fl1':'Features','fl2':'Pricing','fl3':'Comparison','fl4':'Presentation','fl5':'Contact us','fl6':'Privacy',
+    'footer-copy':'© 2025 JobsitePro. All rights reserved.','footer-host':'Data hosted in Canada 🇨🇦',
+    'nav-features':'Features','nav-how':'How it works','nav-pricing':'Pricing','nav-compare':'Compare','nav-contact':'Contact',
+    'nav-login':'Sign in','nav-cta':'Free trial',
+  }
+};
+
+let activeLang = localStorage.getItem('ct_site_lang') || 'fr';
+
+function setLang(l) {
+  activeLang = l;
+  localStorage.setItem('ct_site_lang', l);
+  document.getElementById('lbtn-fr').classList.toggle('active', l==='fr');
+  document.getElementById('lbtn-en').classList.toggle('active', l==='en');
+  document.documentElement.lang = l;
+  const data = CONTENT[l];
+  const htmlIds = new Set(['hero-h1','pain-text','feat-h2','how-h2','price-h2','cmp-h2','testi-h2','cta-h2','acct-h2']);
+  for (const [id, val] of Object.entries(data)) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    if (htmlIds.has(id)) {
+      el.innerHTML = val;
+    } else {
+      el.textContent = val;
+    }
+  }
+  // Plan feature lists (FR / EN)
+  const planFeats = {
+    t: l === 'fr'
+      ? ['Pointage GPS + géofencing','Documents SST + signatures','Carte live, photos, incidents','Chantiers & pointages illimités']
+      : ['GPS time tracking + geofencing','Safety documents + signatures','Live map, photos, incidents','Unlimited job sites & time entries'],
+    p: l === 'fr'
+      ? ['Tout le forfait Standard','Scan reçus OCR (employé)','Dépenses & approbation patron','Kilométrage']
+      : ['Everything in Standard plan','Receipt OCR scan (employee)','Expenses & owner approval','Mileage tracking'],
+    e: l === 'fr'
+      ? ['Tout le forfait Premium','CRM, soumissions, coûts chantier','Intégrations comptables','Rapports & rentabilité']
+      : ['Everything in Premium plan','CRM, quotes, job costing','Accounting integrations','Reports & profitability'],
+  };
+  ['t','p','e'].forEach(k => {
+    const el = document.getElementById('plan-' + k + '-feats');
+    if (el) el.innerHTML = planFeats[k].map(i => `<li><i class="ti ti-check"></i><span>${i}</span></li>`).join('');
+  });
+  window.refreshContactFormLabels?.();
+}
+
+// Init
+setLang(activeLang);
+
+// Sticky nav
+window.addEventListener('scroll', () => {
+  document.getElementById('main-nav').classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// Fade-up observer
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, {threshold:.1});
+document.querySelectorAll('.feat-card,.step-row,.testi-card').forEach(el => {
+  el.classList.add('fade-up'); obs.observe(el);
+});
+</script>
+<script>
+// ── THREE.JS CONSTRUCTION WIREFRAME BACKGROUND ────────────────
+(function() {
+  const canvas = document.getElementById('hero-canvas');
+  if (!canvas || typeof THREE === 'undefined') return;
+
+  let W = canvas.parentElement.offsetWidth;
+  let H = canvas.parentElement.offsetHeight || window.innerHeight;
+
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setSize(W, H);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(50, W / H, 0.1, 200);
+  camera.position.set(0, 4, 38);
+  camera.lookAt(0, 0, 0);
+
+  // ── WIREFRAME STRUCTURAL JOINTS (boxes = steel connection nodes)
+  const orangeMat = () => new THREE.LineBasicMaterial({
+    color: 0xEA8C2A, transparent: true, opacity: 0.12 + Math.random() * 0.2
+  });
+  const blueMat = () => new THREE.LineBasicMaterial({
+    color: 0x4B8EF0, transparent: true, opacity: 0.08 + Math.random() * 0.12
+  });
+
+  const structureGroup = new THREE.Group();
+  scene.add(structureGroup);
+
+  const boxSizes = [1.8, 2.5, 3.2, 1.5, 2.8, 3.8, 2.2];
+  for (let i = 0; i < 22; i++) {
+    const sz = boxSizes[i % boxSizes.length];
+    const geo = new THREE.EdgesGeometry(new THREE.BoxGeometry(sz, sz, sz));
+    const mat = i % 4 === 0 ? blueMat() : orangeMat();
+    const mesh = new THREE.LineSegments(geo, mat);
+    mesh.position.set(
+      (Math.random() - 0.5) * 55,
+      (Math.random() - 0.5) * 35,
+      (Math.random() - 0.5) * 22 - 4
+    );
+    mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+    mesh.userData.rx = (Math.random() - 0.5) * 0.004;
+    mesh.userData.ry = (Math.random() - 0.5) * 0.006;
+    structureGroup.add(mesh);
+  }
+
+  // ── GRID PLANE (blueprint)
+  const gridHelper = new THREE.GridHelper(80, 24, 0xEA8C2A, 0x1a1e2a);
+  gridHelper.position.y = -14;
+  gridHelper.material.transparent = true;
+  gridHelper.material.opacity = 0.07;
+  scene.add(gridHelper);
+
+  // ── PARTICLES
+  const COUNT = 450;
+  const pos = new Float32Array(COUNT * 3);
+  for (let i = 0; i < COUNT; i++) {
+    pos[i * 3]     = (Math.random() - 0.5) * 75;
+    pos[i * 3 + 1] = (Math.random() - 0.5) * 55;
+    pos[i * 3 + 2] = (Math.random() - 0.5) * 30 - 5;
+  }
+  const pGeo = new THREE.BufferGeometry();
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  const pMat = new THREE.PointsMaterial({ color: 0xEA8C2A, size: 0.13, transparent: true, opacity: 0.5, sizeAttenuation: true });
+  const particles = new THREE.Points(pGeo, pMat);
+  scene.add(particles);
+
+  // ── AMBIENT GLOW (orange point light trick via fog)
+  scene.fog = new THREE.FogExp2(0x0c0e12, 0.018);
+
+  // ── MOUSE PARALLAX
+  let mx = 0, my = 0;
+  document.addEventListener('mousemove', e => {
+    mx = (e.clientX / window.innerWidth  - 0.5) * 2;
+    my = (e.clientY / window.innerHeight - 0.5) * 2;
+  });
+
+  // ── ANIMATE
+  let t = 0;
+  function animate() {
+    requestAnimationFrame(animate);
+    t += 0.01;
+
+    // Slow global drift
+    structureGroup.rotation.y += 0.0012;
+    structureGroup.rotation.x = Math.sin(t * 0.05) * 0.06;
+
+    // Individual box spins
+    structureGroup.children.forEach(c => {
+      c.rotation.x += c.userData.rx;
+      c.rotation.y += c.userData.ry;
+    });
+
+    // Particle drift
+    particles.rotation.y += 0.0004;
+    particles.rotation.x = Math.sin(t * 0.03) * 0.02;
+
+    // Camera parallax
+    camera.position.x += (mx * 4 - camera.position.x) * 0.025;
+    camera.position.y += (-my * 2.5 - camera.position.y + 4) * 0.025;
+    camera.lookAt(0, 0, 0);
+
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  // ── RESIZE
+  window.addEventListener('resize', () => {
+    W = canvas.parentElement.offsetWidth;
+    H = canvas.parentElement.offsetHeight || window.innerHeight;
+    renderer.setSize(W, H);
+    camera.aspect = W / H;
+    camera.updateProjectionMatrix();
+  });
+})();
+</script>
+</body>
+</html>

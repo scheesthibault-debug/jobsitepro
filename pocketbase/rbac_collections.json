@@ -1,0 +1,26 @@
+[
+  {
+    "name": "users",
+    "fields": [
+      {
+        "hidden": false,
+        "id": "select_rbac_role_01",
+        "maxSelect": 1,
+        "name": "rbac_role",
+        "presentable": false,
+        "required": false,
+        "system": false,
+        "type": "select",
+        "values": [
+          "admin_patron",
+          "gestionnaire",
+          "comptable",
+          "contremaitre",
+          "securite_sst",
+          "employe",
+          "lecture_seule"
+        ]
+      }
+    ]
+  }
+]

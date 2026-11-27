@@ -1,0 +1,45 @@
+{
+  "name": "JobsitePro — Patron",
+  "short_name": "JobsitePro",
+  "description": "Tableau de bord patron — gestion de chantiers",
+  "start_url": "/patron/",
+  "scope": "/patron/",
+  "display": "standalone",
+  "background_color": "#1a1a1a",
+  "theme_color": "#EA8C2A",
+  "orientation": "any",
+  "lang": "fr",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/patron/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/patron/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["business", "productivity"]
+}

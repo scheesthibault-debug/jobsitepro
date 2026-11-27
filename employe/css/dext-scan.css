@@ -1,0 +1,95 @@
+/* JobsitePro employé — scan reçu style Dext */
+.dext-scan-page { padding: 0 0 12px; }
+.dext-scan-hero {
+  background: linear-gradient(160deg, #1f2937 0%, #111827 100%);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 16px;
+  padding: 28px 20px 24px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+.dext-scan-hero-icon {
+  width: 72px; height: 72px; margin: 0 auto 14px;
+  background: rgba(245,158,11,.15);
+  border: 2px dashed rgba(245,158,11,.45);
+  border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px; color: #f59e0b;
+}
+.dext-scan-hero h2 { font-size: 20px; font-weight: 700; color: #f1f5f9; margin: 0 0 6px; }
+.dext-scan-hero p { font-size: 13px; color: #94a3b8; margin: 0 0 12px; line-height: 1.45; }
+.dext-scan-hero-action { cursor: pointer; transition: transform .12s, border-color .15s; }
+.dext-scan-hero-action:active { transform: scale(.98); }
+.dext-scan-hero-action:hover { border-color: rgba(245, 158, 11, .45); }
+.dext-scan-hero-cta {
+  display: inline-flex; align-items: center; gap: 8px; margin-top: 4px;
+  padding: 12px 22px; border-radius: 10px; background: #f59e0b; color: #111827;
+  font-size: 15px; font-weight: 700;
+}
+.dext-scan-link-btn {
+  background: transparent; border: none; color: #94a3b8; font-size: 13px;
+  text-decoration: underline; padding: 6px; cursor: pointer; text-align: center;
+}
+.dext-scan-actions { display: flex; flex-direction: column; gap: 10px; }
+.dext-scan-btn {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 16px 18px; border-radius: 12px; font-size: 15px; font-weight: 600;
+  border: none; cursor: pointer; transition: transform .1s, opacity .15s;
+}
+.dext-scan-btn:active { transform: scale(.98); }
+.dext-scan-btn-primary { background: #f59e0b; color: #111827; }
+.dext-scan-btn-secondary { background: #1f2937; color: #f1f5f9; border: 1px solid rgba(255,255,255,.12); }
+.dext-scan-btn-ghost { background: transparent; color: #94a3b8; font-size: 13px; font-weight: 500; padding: 10px; }
+
+.dext-scan-review { display: none; }
+.dext-scan-review.show { display: block; }
+.dext-review-header {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+}
+.dext-review-back {
+  background: #1f2937; border: 1px solid rgba(255,255,255,.1);
+  border-radius: 10px; width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center; color: #f1f5f9; cursor: pointer;
+}
+.dext-review-title { font-size: 17px; font-weight: 700; color: #f1f5f9; flex: 1; }
+.dext-review-step { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: .04em; }
+.dext-review-preview {
+  background: #111827; border: 1px solid rgba(255,255,255,.08);
+  border-radius: 12px; padding: 10px; margin-bottom: 14px; text-align: center;
+}
+.dext-review-preview img { max-height: 160px; max-width: 100%; border-radius: 8px; object-fit: contain; }
+.dext-review-form .form-group { margin-bottom: 12px; }
+.dext-review-form .fi { background: #1f2937; border-color: rgba(255,255,255,.1); color: #f1f5f9; }
+.dext-review-submit { margin-top: 8px; width: 100%; padding: 14px; font-size: 15px; font-weight: 600; }
+
+.exp-ocr-summary {
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.exp-ocr-summary-ok {
+  background: rgba(34, 197, 94, .12);
+  border: 1px solid rgba(34, 197, 94, .35);
+  color: #bbf7d0;
+}
+.exp-ocr-summary-err {
+  background: rgba(239, 68, 68, .1);
+  border: 1px solid rgba(239, 68, 68, .35);
+  color: #fecaca;
+}
+.exp-ocr-summary-title {
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #f1f5f9;
+}
+.exp-ocr-summary-line { color: inherit; opacity: .95; margin-top: 2px; }
+.exp-ocr-summary-photo {
+  background: rgba(59, 130, 246, .12);
+  border: 1px solid rgba(59, 130, 246, .35);
+  color: #bfdbfe;
+}

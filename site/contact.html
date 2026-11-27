@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contact — JobsitePro</title>
+<meta name="description" content="Contactez l'équipe JobsitePro pour une démo ou une question sur la gestion de chantiers.">
+<link rel="icon" href="jobsitepro-icon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+:root{
+  --bg:#0c0e12;--bg2:#131620;--bg3:#1a1e2a;--border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.15);
+  --text:#f0f2f7;--text2:#a0a8c0;--text3:#5a6280;--orange:#EA8C2A;--orange2:#F5A04A;
+  --green:#3DB87A;--red:#E55858;--display:'Barlow Condensed',sans-serif;--body:'DM Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--body);background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+a{color:inherit;text-decoration:none}
+.container{max-width:560px;margin:0 auto;padding:0 24px}
+.nav{padding:18px 0;border-bottom:.5px solid var(--border)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;max-width:1160px;margin:0 auto;padding:0 24px}
+.nav-logo{font-family:var(--display);font-size:22px;font-weight:800;display:flex;align-items:center;gap:10px}
+.nav-logo img{width:36px;height:36px;border-radius:10px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 26px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;font-family:var(--body);transition:all .2s}
+.btn-primary{background:var(--orange);color:#000;width:100%;justify-content:center;margin-top:8px}
+.btn-primary:hover{background:var(--orange2)}
+.btn-primary:disabled{opacity:.6;cursor:not-allowed}
+.btn-outline{background:transparent;border:1.5px solid var(--border2);color:var(--text2);padding:8px 16px;font-size:13px}
+.btn-outline:hover{border-color:var(--orange);color:var(--orange)}
+.page{padding:56px 0 80px}
+.page-title{font-family:var(--display);font-size:clamp(36px,6vw,52px);font-weight:900;line-height:1;margin-bottom:12px}
+.page-sub{color:var(--text2);font-size:16px;margin-bottom:32px;font-weight:300}
+.contact-card{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:32px 28px}
+.contact-field{margin-bottom:16px}
+.contact-field label{display:block;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:6px}
+.contact-field input,.contact-field textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--text);font-family:var(--body);outline:none;transition:border-color .15s}
+.contact-field input:focus,.contact-field textarea:focus{border-color:var(--orange)}
+.contact-field textarea{min-height:140px;resize:vertical}
+.contact-hp{position:absolute;left:-9999px;opacity:0;height:0;width:0;overflow:hidden}
+.contact-status{font-size:13px;text-align:center;margin-top:16px;min-height:20px;color:var(--text3)}
+.contact-status.ok{color:var(--green)}
+.contact-status.err{color:var(--red)}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="jobsitepro-icon.png" alt="">
+      <span>JobsitePro</span>
+    </a>
+    <a href="index.html" class="btn btn-outline">← Accueil</a>
+  </div>
+</nav>
+
+<main class="page">
+  <div class="container">
+    <h1 class="page-title" id="contact-page-title">Nous contacter</h1>
+    <p class="page-sub" id="contact-page-sub">Une question sur JobsitePro ? Écrivez-nous — nous répondons sous 24 h.</p>
+
+    <div class="contact-card">
+      <form id="contact-form-page" novalidate>
+        <div class="contact-hp" aria-hidden="true">
+          <label for="contact-website">Website</label>
+          <input type="text" id="contact-website" name="website" tabindex="-1" autocomplete="off">
+        </div>
+        <div class="contact-field">
+          <label for="contact-name" data-contact-label="name">Nom</label>
+          <input type="text" id="contact-name" name="name" autocomplete="name" data-contact-ph="name" placeholder="Votre nom">
+        </div>
+        <div class="contact-field">
+          <label for="contact-email" data-contact-label="email">Courriel *</label>
+          <input type="email" id="contact-email" name="email" required autocomplete="email" data-contact-ph="email" placeholder="Votre adresse courriel">
+        </div>
+        <div class="contact-field">
+          <label for="contact-message" data-contact-label="message">Message *</label>
+          <textarea id="contact-message" name="message" required data-contact-ph="message" placeholder="Comment pouvons-nous vous aider ?"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">
+          <span data-contact-label="send">Envoyer votre demande</span>
+          <i class="ti ti-arrow-right" style="font-size:16px"></i>
+        </button>
+        <p class="contact-status" id="contact-status"></p>
+      </form>
+    </div>
+  </div>
+</main>
+
+<script src="js/contact-form.js"></script>
+</body>
+</html>

@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ChantierTrack v2 — Présentation des fonctionnalités</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+:root{
+  --bg:#0c0e12;--bg2:#131620;--bg3:#1a1e2a;--bg4:#232840;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.14);
+  --text:#f0f2f7;--text2:#a0a8c0;--text3:#5a6280;
+  --orange:#EA8C2A;--orange2:#F5A04A;--orange-bg:rgba(234,140,42,.12);
+  --green:#3DB87A;--green-bg:rgba(61,184,122,.1);
+  --red:#E55858;--blue:#4B8EF0;
+  --d:'Barlow Condensed',sans-serif;--b:'DM Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--b);background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;flex-direction:column}
+/* TOPBAR */
+.topbar{background:var(--bg2);border-bottom:.5px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.logo{font-family:var(--d);font-size:18px;font-weight:900;display:flex;align-items:center;gap:7px}
+.logo span{color:var(--orange)}
+.slide-counter{font-size:12px;color:var(--text3);margin-left:auto}
+.slide-title{font-size:13px;font-weight:500;color:var(--text2)}
+.lang-pill{background:var(--bg3);border:.5px solid var(--border);border-radius:20px;padding:3px 2px;display:flex;gap:2px}
+.lang-pill button{background:none;border:none;cursor:pointer;font-size:10px;font-weight:600;color:var(--text3);padding:2px 8px;border-radius:16px;font-family:var(--b)}
+.lang-pill button.active{background:var(--orange);color:#000}
+/* CONTENT AREA */
+.deck{flex:1;overflow:hidden;position:relative}
+.slide{position:absolute;inset:0;display:none;padding:28px 36px;flex-direction:column;justify-content:center;animation:fadeIn .35s ease}
+.slide.active{display:flex}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* BOTTOM NAV */
+.bottom-bar{background:var(--bg2);border-top:.5px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.nav-btn{background:var(--bg3);border:.5px solid var(--border2);border-radius:8px;padding:7px 14px;font-size:12px;font-weight:500;cursor:pointer;color:var(--text2);display:flex;align-items:center;gap:5px;transition:all .15s;font-family:var(--b)}
+.nav-btn:hover{background:var(--bg4);color:var(--text)}
+.nav-btn.primary{background:var(--orange);border-color:var(--orange);color:#000;font-weight:700}
+.nav-btn:disabled{opacity:.3;cursor:default}
+.dots{display:flex;gap:6px;flex:1;justify-content:center}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--bg4);cursor:pointer;transition:all .2s}
+.dot.active{background:var(--orange);width:20px;border-radius:4px}
+/* SLIDE LAYOUTS */
+.slide-label{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);margin-bottom:8px}
+.slide-h{font-family:var(--d);font-weight:900;font-size:clamp(32px,5vw,64px);line-height:.95;margin-bottom:12px}
+.slide-sub{font-size:clamp(13px,1.5vw,16px);color:var(--text2);max-width:500px;line-height:1.6;font-weight:300}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:center;height:100%}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+/* CARDS */
+.card{background:var(--bg2);border:.5px solid var(--border);border-radius:12px;padding:20px;transition:all .2s}
+.card:hover{border-color:var(--border2);background:var(--bg3)}
+.card-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:18px}
+.card-title{font-family:var(--d);font-size:18px;font-weight:700;margin-bottom:5px}
+.card-desc{font-size:12px;color:var(--text2);line-height:1.6}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:600;margin-top:8px}
+.badge-g{background:var(--green-bg);color:var(--green)}
+.badge-o{background:var(--orange-bg);color:var(--orange)}
+.badge-b{background:rgba(75,142,240,.1);color:var(--blue)}
+/* PHONE */
+.phone{width:220px;height:440px;border-radius:28px;border:5px solid #2a2d38;background:#18181b;overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.04);flex-shrink:0}
+.ph-status{background:#111;padding:6px 13px 3px;display:flex;justify-content:space-between;font-size:9px;font-weight:500;color:#e4e4e7}
+.ph-topbar{background:#1f1f23;padding:8px 11px;border-bottom:.5px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:7px}
+.ph-title{font-size:12px;font-weight:600;color:#e4e4e7;flex:1}
+.ph-av{width:22px;height:22px;border-radius:50%;background:#1c3a5c;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#85B7EB}
+.ph-content{flex:1;padding:9px;display:flex;flex-direction:column;gap:7px;overflow:hidden}
+.ph-nav{background:#1f1f23;padding:6px 0;display:flex;border-top:.5px solid rgba(255,255,255,.07)}
+.ph-tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:7px;color:#71717a}
+.ph-tab.active{color:#EA8C2A}
+.ph-tab i{font-size:14px}
+.ph-card{background:#1f1f23;border:.5px solid rgba(255,255,255,.07);border-radius:8px;overflow:hidden}
+.ph-row{padding:7px 9px;border-bottom:.5px solid rgba(255,255,255,.07);font-size:9px;color:#e4e4e7;display:flex;align-items:center;gap:7px}
+.ph-row:last-child{border-bottom:none}
+.ph-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.ph-big-btn{margin:0 9px 9px;background:#e24b4a;border-radius:8px;padding:11px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;font-weight:700;color:white}
+.ph-big-btn-g{margin:0 9px 9px;background:#5a9e1e;border-radius:8px;padding:11px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;font-weight:700;color:white}
+/* FLOW DIAGRAM */
+.flow{display:flex;align-items:center;gap:0;flex-wrap:wrap}
+.flow-step{background:var(--bg2);border:.5px solid var(--border);border-radius:10px;padding:12px 16px;text-align:center;flex:1;min-width:120px}
+.flow-step.orange{border-color:rgba(234,140,42,.3);background:var(--orange-bg)}
+.flow-step.green{border-color:rgba(61,184,122,.3);background:var(--green-bg)}
+.flow-arr{padding:0 6px;color:var(--orange);font-size:20px;flex-shrink:0}
+.flow-num{font-family:var(--d);font-size:28px;font-weight:900;color:var(--orange);opacity:.4;line-height:1}
+.flow-label{font-size:11px;font-weight:600;margin-top:3px}
+.flow-sub{font-size:10px;color:var(--text3);margin-top:2px}
+/* TABLE */
+.cmp-table{width:100%;border-collapse:collapse;font-size:12px}
+.cmp-table th{padding:8px 12px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text3);border-bottom:.5px solid var(--border);background:var(--bg3)}
+.cmp-table td{padding:8px 12px;border-bottom:.5px solid var(--border);color:var(--text2)}
+.cmp-table td:nth-child(2){text-align:center}
+.cmp-table td:nth-child(3){text-align:center;color:var(--orange)}
+.cmp-table tr:last-child td{border-bottom:none}
+/* PULSE */
+.pulse-dot{width:8px;height:8px;border-radius:50%;background:#5a9e1e;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+/* PROGRESS BAR */
+.prog-bar{height:3px;background:var(--bg4);border-radius:2px;margin-top:4px}
+.prog-fill{height:100%;border-radius:2px;background:var(--orange)}
+/* HIGHLIGHT */
+.hl{color:var(--orange)}
+.hl-g{color:var(--green)}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="logo">🏗️ Chantier<span>Track</span></div>
+  <div class="slide-title" id="top-slide-title">Présentation</div>
+  <div class="slide-counter" id="slide-counter">1 / 10</div>
+  <div class="lang-pill" style="margin-left:16px">
+    <button class="active" id="lbtn-fr" onclick="setLang('fr')">FR</button>
+    <button id="lbtn-en" onclick="setLang('en')">EN</button>
+  </div>
+</div>
+
+<!-- SLIDES -->
+<div class="deck" id="deck">
+
+  <!-- SLIDE 1: COVER -->
+  <div class="slide active" id="s1" style="justify-content:center;align-items:center;text-align:center;background:radial-gradient(ellipse at center,rgba(234,140,42,.06) 0%,transparent 60%)">
+    <div style="font-size:56px;margin-bottom:16px">🏗️</div>
+    <div style="font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);margin-bottom:10px" id="s1-label">Présentation officielle</div>
+    <h1 style="font-family:var(--d);font-weight:900;font-size:clamp(48px,8vw,96px);line-height:.9;margin-bottom:14px">CHANTIER<br><span style="color:var(--orange)">TRACK</span><br><span style="font-size:40%;color:var(--text3)">v2</span></h1>
+    <p style="font-size:16px;color:var(--text2);font-weight:300;max-width:480px;margin:0 auto 28px" id="s1-sub">La solution de gestion de chantiers conçue pour la construction québécoise</p>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px">
+      <span class="badge badge-o"><i class="ti ti-map-pin" style="font-size:10px"></i> <span id="s1-b1">Pointage GPS</span></span>
+      <span class="badge badge-g"><i class="ti ti-file-certificate" style="font-size:10px"></i> <span id="s1-b2">Documents SST</span></span>
+      <span class="badge badge-b"><i class="ti ti-cash" style="font-size:10px"></i> <span id="s1-b3">Paie automatique</span></span>
+    </div>
+    <p style="font-size:12px;color:var(--text3);margin-top:24px" id="s1-nav">Appuyez → ou cliquez Suivant pour commencer</p>
+  </div>
+
+  <!-- SLIDE 2: PROBLÈME -->
+  <div class="slide" id="s2" style="justify-content:center">
+    <div class="two-col">
+      <div>
+        <div class="slide-label" id="s2-label">Le problème</div>
+        <h2 class="slide-h" id="s2-h">LES OUTILS<br>EXISTANTS NE<br>VOUS COMPRENNENT PAS</h2>
+        <p class="slide-sub" id="s2-sub">QuickBooks Workforce est conçu pour tous les types de business. Pas pour la construction québécoise.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="card" style="border-left:3px solid var(--red)">
+          <div style="font-size:13px;font-weight:600;margin-bottom:4px" id="s2-p1t">❌ Pas de documents SST</div>
+          <div style="font-size:12px;color:var(--text2)" id="s2-p1d">La conformité CNESST se fait encore avec du papier</div>
+        </div>
+        <div class="card" style="border-left:3px solid var(--red)">
+          <div style="font-size:13px;font-weight:600;margin-bottom:4px" id="s2-p2t">❌ Interface partiellement en français</div>
+          <div style="font-size:12px;color:var(--text2)" id="s2-p2d">Vos employés et vous méritez un outil 100% en français</div>
+        </div>
+        <div class="card" style="border-left:3px solid var(--red)">
+          <div style="font-size:13px;font-weight:600;margin-bottom:4px" id="s2-p3t">❌ Données sur des serveurs américains</div>
+          <div style="font-size:12px;color:var(--text2)" id="s2-p3d">Problématique pour la Loi 25 au Québec</div>
+        </div>
+        <div class="card" style="border-left:3px solid var(--red)">
+          <div style="font-size:13px;font-weight:600;margin-bottom:4px" id="s2-p4t">❌ Prix élevé par utilisateur</div>
+          <div style="font-size:12px;color:var(--text2)" id="s2-p4d">~194$/mois pour 10 employés avec le plan Elite</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: SOLUTION -->
+  <div class="slide" id="s3" style="justify-content:center">
+    <div class="two-col">
+      <div>
+        <div class="slide-label" id="s3-label">La solution</div>
+        <h2 class="slide-h" id="s3-h">CHANTIERTRACK<br>A ÉTÉ CONÇU<br><span class="hl">POUR VOUS</span></h2>
+        <p class="slide-sub" id="s3-sub">Un seul outil qui couvre tout le cycle de gestion d'un chantier — du pointage GPS aux bulletins de paie, en passant par la conformité SST.</p>
+        <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px"><i class="ti ti-check" style="color:var(--green);font-size:15px"></i><span id="s3-c1">100% en français + anglais</span></div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px"><i class="ti ti-check" style="color:var(--green);font-size:15px"></i><span id="s3-c2">Données hébergées au Canada (Loi 25)</span></div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px"><i class="ti ti-check" style="color:var(--green);font-size:15px"></i><span id="s3-c3">Documents SST avec signature électronique</span></div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px"><i class="ti ti-check" style="color:var(--green);font-size:15px"></i><span id="s3-c4">10$ CAD / employé / mois — tout inclus</span></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="background:var(--bg2);border:.5px solid rgba(234,140,42,.3);border-radius:14px;padding:20px">
+          <div style="font-family:var(--d);font-size:48px;font-weight:900;color:var(--orange);line-height:1">10$</div>
+          <div style="font-size:13px;color:var(--text2);margin-top:3px" id="s3-price-sub">CAD / employé / mois</div>
+          <div style="margin-top:12px;padding-top:12px;border-top:.5px solid var(--border);display:flex;justify-content:space-between;font-size:11px;color:var(--text3)">
+            <div style="text-align:center"><div style="font-weight:600;color:var(--text)">100$</div><div id="s3-p1">10 employés</div></div>
+            <div style="text-align:center"><div style="font-weight:600;color:var(--text)">200$</div><div id="s3-p2">20 employés</div></div>
+            <div style="text-align:center"><div style="font-weight:600;color:var(--text)">500$</div><div id="s3-p3">50 employés</div></div>
+          </div>
+        </div>
+        <div style="background:var(--bg2);border:.5px solid var(--border);border-radius:10px;padding:14px">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:8px" id="s3-vs">vs QuickBooks Elite (CAD)</div>
+          <div style="display:flex;gap:10px">
+            <div style="flex:1;background:var(--red-bg);border-radius:6px;padding:8px;text-align:center"><div style="font-size:14px;font-weight:600;color:var(--red)">194$/mois</div><div style="font-size:9px;color:var(--text3)" id="s3-qb">QB · 10 employés</div></div>
+            <div style="flex:1;background:var(--green-bg);border-radius:6px;padding:8px;text-align:center"><div style="font-size:14px;font-weight:600;color:var(--green)">100$/mois</div><div style="font-size:9px;color:var(--text3)" id="s3-ct">CT · 10 employés</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: APP EMPLOYÉ -->
+  <div class="slide" id="s4" style="justify-content:center">
+    <div class="two-col">
+      <div>
+        <div class="slide-label" id="s4-label">App mobile employé</div>
+        <h2 class="slide-h" id="s4-h">L'EMPLOYÉ<br>GÈRE TOUT<br><span class="hl">DEPUIS SON TÉLÉPHONE</span></h2>
+        <p class="slide-sub" id="s4-sub">PWA installable — aucun App Store requis. Fonctionne sur iPhone et Android.</p>
+        <div style="margin-top:18px;display:flex;flex-direction:column;gap:9px" id="s4-features">
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px"><div style="width:28px;height:28px;border-radius:7px;background:rgba(90,158,30,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-clock" style="font-size:14px;color:#5a9e1e"></i></div><span>Pointer arrivée / départ avec GPS</span></div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px"><div style="width:28px;height:28px;border-radius:7px;background:rgba(234,140,42,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-file-certificate" style="font-size:14px;color:#EA8C2A"></i></div><span>Signer les documents SST</span></div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px"><div style="width:28px;height:28px;border-radius:7px;background:rgba(226,75,74,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-alert-triangle" style="font-size:14px;color:#e24b4a"></i></div><span>Déclarer un incident avec photos + GPS</span></div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px"><div style="width:28px;height:28px;border-radius:7px;background:rgba(29,158,117,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-car" style="font-size:14px;color:#1D9E75"></i></div><span>Logger ses kilomètres</span></div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px"><div style="width:28px;height:28px;border-radius:7px;background:rgba(55,138,221,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-beach" style="font-size:14px;color:#378ADD"></i></div><span>Demander un congé</span></div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px"><div style="width:28px;height:28px;border-radius:7px;background:rgba(75,142,240,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-wifi-off" style="font-size:14px;color:#4B8EF0"></i></div><span>Mode hors ligne — sync auto</span></div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:center">
+        <div class="phone">
+          <div class="ph-status"><span>9:41</span><span>5G 🔋</span></div>
+          <div class="ph-topbar"><span class="ph-title">Accueil</span><span class="pulse-dot"></span><div class="ph-av">MT</div></div>
+          <div class="ph-content">
+            <div style="background:linear-gradient(135deg,#1c3a5c,#1f1f23);border:.5px solid rgba(55,138,221,.2);border-radius:8px;padding:9px"><div style="font-size:11px;font-weight:600;color:#e4e4e7">Bonjour, Marc 👷</div><div style="font-size:9px;color:#85B7EB">Résidences du Parc</div></div>
+            <div class="ph-card">
+              <div style="padding:7px 9px;display:flex;align-items:center;gap:6px;background:rgba(90,158,30,.08)"><div class="pulse-dot" style="width:6px;height:6px"></div><div><div style="font-size:10px;font-weight:600;color:#e4e4e7">Sur chantier 08:02</div><div style="font-size:8px;color:#5a9e1e">1h39 · GPS ✓</div></div></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
+              <div style="background:#1f1f23;border-radius:7px;padding:8px;text-align:center"><i class="ti ti-file-certificate" style="font-size:16px;color:#EA8C2A"></i><div style="font-size:8px;font-weight:600;color:#e4e4e7;margin-top:3px">Documents</div><div style="font-size:7px;background:#e24b4a22;color:#e24b4a;padding:1px 4px;border-radius:8px;margin-top:1px">3</div></div>
+              <div style="background:#1f1f23;border-radius:7px;padding:8px;text-align:center"><i class="ti ti-camera" style="font-size:16px;color:#378ADD"></i><div style="font-size:8px;font-weight:600;color:#e4e4e7;margin-top:3px">Photos</div></div>
+            </div>
+            <div class="ph-big-btn"><i class="ti ti-logout" style="font-size:12px"></i> POINTER SORTIE</div>
+          </div>
+          <div class="ph-nav">
+            <div class="ph-tab active"><i class="ti ti-home"></i><span>Accueil</span></div>
+            <div class="ph-tab"><i class="ti ti-clock"></i><span>Pointer</span></div>
+            <div class="ph-tab"><i class="ti ti-file-certificate"></i><span>Docs</span></div>
+            <div class="ph-tab"><i class="ti ti-dots"></i><span>Plus</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: DASHBOARD PATRON -->
+  <div class="slide" id="s5" style="justify-content:center">
+    <div class="slide-label" id="s5-label">Dashboard patron</div>
+    <h2 class="slide-h" style="font-size:clamp(24px,4vw,48px);margin-bottom:16px" id="s5-h">TOUT SOUS CONTRÔLE<br>EN UN COUP D'ŒIL</h2>
+    <div class="three-col">
+      <div class="card"><div class="card-icon" style="background:rgba(61,184,122,.1)"><i class="ti ti-map" style="color:var(--green);font-size:18px"></i></div><div class="card-title" id="s5-f1">Carte live</div><div class="card-desc" id="s5-d1">Voyez tous vos employés sur une carte en temps réel. Qui est sur quel chantier, depuis quand.</div></div>
+      <div class="card"><div class="card-icon" style="background:rgba(234,140,42,.1)"><i class="ti ti-clock" style="color:var(--orange);font-size:18px"></i></div><div class="card-title" id="s5-f2">Pointages</div><div class="card-desc" id="s5-d2">Registre complet de toutes les heures. Filtrage par période. Export CSV en un clic.</div></div>
+      <div class="card"><div class="card-icon" style="background:rgba(127,119,221,.1)"><i class="ti ti-cash" style="color:#7F77DD;font-size:18px"></i></div><div class="card-title" id="s5-f3">Paie</div><div class="card-desc" id="s5-d3">Calculez la paie en un clic. Bulletins générés automatiquement. Export format QuickBooks.</div></div>
+      <div class="card"><div class="card-icon" style="background:rgba(55,138,221,.1)"><i class="ti ti-calendar" style="color:var(--blue);font-size:18px"></i></div><div class="card-title" id="s5-f4">Horaires</div><div class="card-desc" id="s5-d4">Grille hebdomadaire par employé. Créez les shifts et notifiez automatiquement.</div></div>
+      <div class="card"><div class="card-icon" style="background:rgba(29,158,117,.1)"><i class="ti ti-receipt" style="color:#1D9E75;font-size:18px"></i></div><div class="card-title" id="s5-f5">Facturation</div><div class="card-desc" id="s5-d5">Coût par chantier calculé en temps réel. Alertes si vous dépassez le budget.</div></div>
+      <div class="card"><div class="card-icon" style="background:rgba(239,159,39,.1)"><i class="ti ti-beach" style="color:#EF9F27;font-size:18px"></i></div><div class="card-title" id="s5-f6">Congés</div><div class="card-desc" id="s5-d6">Les employés demandent depuis l'app. Vous approuvez ou refusez en un clic.</div></div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: PAYROLL QUÉBEC -->
+  <div class="slide" id="s6" style="justify-content:center">
+    <div class="two-col">
+      <div>
+        <div class="slide-label" id="s6-label">Paie & Comptabilité</div>
+        <h2 class="slide-h" id="s6-h">PAIE QUÉBEC<br><span class="hl">AUTOMATISÉE</span></h2>
+        <p class="slide-sub" id="s6-sub">Toutes les retenues à la source calculées automatiquement selon les taux Québec 2025.</p>
+        <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div class="card" style="padding:12px"><div style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:3px">RRQ 2025</div><div style="font-size:15px;font-weight:700;color:var(--orange)">6.7%</div><div style="font-size:10px;color:var(--text3)">emp. + patronal</div></div>
+          <div class="card" style="padding:12px"><div style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:3px">AE Québec</div><div style="font-size:15px;font-weight:700;color:var(--blue)">1.32%</div><div style="font-size:10px;color:var(--text3)">taux réduit QC</div></div>
+          <div class="card" style="padding:12px"><div style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:3px">RQAP</div><div style="font-size:15px;font-weight:700;color:var(--green)">0.494%</div><div style="font-size:10px;color:var(--text3)">emp. / 0.692% patron</div></div>
+          <div class="card" style="padding:12px"><div style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:3px">Impôt</div><div style="font-size:15px;font-weight:700;color:var(--amber)">Estimé*</div><div style="font-size:10px;color:var(--text3)">TD1 + TP-1015</div></div>
+        </div>
+        <div style="margin-top:14px;display:flex;flex-direction:column;gap:7px">
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px"><i class="ti ti-check" style="color:var(--green);font-size:14px"></i><span id="s6-c1">Bulletins de paie avec toutes les retenues</span></div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px"><i class="ti ti-check" style="color:var(--green);font-size:14px"></i><span id="s6-c2">Remises employeur calculées (RRQ+AE+RQAP)</span></div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px"><i class="ti ti-check" style="color:var(--green);font-size:14px"></i><span id="s6-c3">Export RL-1 / T4 données annuelles</span></div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px"><i class="ti ti-check" style="color:var(--green);font-size:14px"></i><span id="s6-c4">Export QuickBooks IIF + CSV + Acomba</span></div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:12px"><i class="ti ti-check" style="color:var(--green);font-size:14px"></i><span id="s6-c5">Accès lecture seule pour votre comptable</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="padding:0;overflow:hidden">
+          <div style="background:var(--bg3);padding:10px 13px;border-bottom:.5px solid var(--border);font-size:11px;font-weight:600;display:flex;justify-content:space-between">
+            <span id="s6-stub">Bulletin · Marc Tremblay · Bip. 24</span>
+            <span class="badge badge-g">2 sem.</span>
+          </div>
+          <div style="padding:12px;display:flex;flex-direction:column;gap:7px;font-size:11px">
+            <div style="display:flex;justify-content:space-between;padding-bottom:6px;border-bottom:.5px solid var(--border)">
+              <span style="color:var(--text2)" id="s6-gross-lbl">Salaire brut (80h + 4h OT)</span>
+              <span style="font-weight:600">2 408.00$</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;color:var(--text2)"><span>- RRQ (6.7%)</span><span>134.67$</span></div>
+            <div style="display:flex;justify-content:space-between;color:var(--text2)"><span>- AE Québec (1.32%)</span><span>31.79$</span></div>
+            <div style="display:flex;justify-content:space-between;color:var(--text2)"><span>- RQAP (0.494%)</span><span>11.90$</span></div>
+            <div style="display:flex;justify-content:space-between;color:var(--amber)"><span id="s6-tax-lbl">- Impôt fédéral + QC (est.)</span><span>701.32$</span></div>
+            <div style="display:flex;justify-content:space-between;font-weight:700;padding-top:6px;border-top:.5px solid var(--border);color:var(--green)"><span id="s6-net-lbl">= Salaire net estimé</span><span>1 528.32$</span></div>
+            <div style="background:var(--orange-bg);border-radius:6px;padding:8px 10px;margin-top:4px">
+              <div style="font-size:10px;font-weight:600;color:var(--orange);margin-bottom:4px" id="s6-er-lbl">Part patronale à remettre</div>
+              <div style="display:flex;justify-content:space-between;color:var(--text2)"><span>RRQ + AE + RQAP (patron)</span><span style="font-weight:600;color:var(--orange)">195.84$</span></div>
+            </div>
+            <div style="display:flex;gap:5px;margin-top:5px;flex-wrap:wrap">
+              <span style="font-size:9px;background:var(--bg3);padding:2px 7px;border-radius:10px;color:var(--text3)">📊 IIF QuickBooks</span>
+              <span style="font-size:9px;background:var(--bg3);padding:2px 7px;border-radius:10px;color:var(--text3)">📋 RL-1/T4</span>
+              <span style="font-size:9px;background:var(--bg3);padding:2px 7px;border-radius:10px;color:var(--text3)">📁 Acomba</span>
+            </div>
+          </div>
+        </div>
+        <div style="background:rgba(234,140,42,.06);border:.5px solid rgba(234,140,42,.2);border-radius:8px;padding:9px 12px;margin-top:8px;font-size:10px;color:var(--text3);line-height:1.5" id="s6-disclaimer">
+          * Impôt = estimation tranche de base. Comptable doit valider avec TD1 fédéral + TP-1015 Québec de chaque employé.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: SST (was 6) -->
+  <div class="slide" id="s6" style="justify-content:center">
+    <div class="two-col">
+      <div>
+        <div class="slide-label" id="s6-label">Sécurité & Conformité</div>
+        <h2 class="slide-h" id="s6-h">CONFORMITÉ<br>CNESST<br><span class="hl">SIMPLIFIÉE</span></h2>
+        <p class="slide-sub" id="s6-sub">La gestion des documents SST est un avantage unique que QuickBooks n'offre pas.</p>
+        <div style="margin-top:20px;display:flex;flex-direction:column;gap:10px">
+          <div style="background:var(--bg2);border:.5px solid var(--border);border-radius:10px;padding:13px;display:flex;gap:10px;align-items:flex-start"><div style="width:32px;height:32px;border-radius:8px;background:var(--orange-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:15px">📄</span></div><div><div style="font-size:12px;font-weight:600;margin-bottom:2px" id="s6-s1t">Envoi de documents</div><div style="font-size:11px;color:var(--text2)" id="s6-s1d">Le patron envoie les formulaires SST depuis le dashboard. Notification push immédiate.</div></div></div>
+          <div style="background:var(--bg2);border:.5px solid var(--border);border-radius:10px;padding:13px;display:flex;gap:10px;align-items:flex-start"><div style="width:32px;height:32px;border-radius:8px;background:var(--orange-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:15px">✍️</span></div><div><div style="font-size:12px;font-weight:600;margin-bottom:2px" id="s6-s2t">Signature sur téléphone</div><div style="font-size:11px;color:var(--text2)" id="s6-s2d">L'employé signe avec son doigt sur l'écran. La signature PNG est sauvegardée dans PocketBase.</div></div></div>
+          <div style="background:var(--bg2);border:.5px solid var(--border);border-radius:10px;padding:13px;display:flex;gap:10px;align-items:flex-start"><div style="width:32px;height:32px;border-radius:8px;background:var(--orange-bg);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:15px">📊</span></div><div><div style="font-size:12px;font-weight:600;margin-bottom:2px" id="s6-s3t">Suivi en temps réel</div><div style="font-size:11px;color:var(--text2)" id="s6-s3d">Le patron voit qui a signé, qui ne l'a pas encore fait. Rappels automatiques.</div></div></div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:center">
+        <div class="phone">
+          <div class="ph-status"><span>9:41</span><span>5G 🔋</span></div>
+          <div class="ph-topbar"><span class="ph-title" id="s6-ph-title">Documents à signer</span><div class="ph-av">MT</div></div>
+          <div class="ph-content" style="gap:6px">
+            <div style="font-size:9px;color:#a1a1aa" id="s6-ph-sub">3 documents requis</div>
+            <div class="ph-card">
+              <div class="ph-row"><div style="width:26px;height:26px;background:rgba(234,140,42,.15);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-file-certificate" style="font-size:13px;color:#EA8C2A"></i></div><div style="flex:1"><div style="font-weight:600;font-size:9px">Formulaire SST-2025</div><div style="font-size:8px;color:#71717a" id="s6-sign-lbl">Limite: 14 jan.</div></div><div style="background:#EA8C2A;border-radius:5px;padding:3px 6px;font-size:8px;font-weight:700;color:black" id="s6-sign-btn">Signer</div></div>
+              <div class="ph-row"><div style="width:26px;height:26px;background:rgba(234,140,42,.15);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-file-certificate" style="font-size:13px;color:#EA8C2A"></i></div><div style="flex:1"><div style="font-weight:600;font-size:9px">Plan évacuation</div><div style="font-size:8px;color:#71717a">10 jan.</div></div><div style="background:#EA8C2A;border-radius:5px;padding:3px 6px;font-size:8px;font-weight:700;color:black" id="s6-sign-btn2">Signer</div></div>
+              <div class="ph-row" style="opacity:.45"><div style="width:26px;height:26px;background:rgba(90,158,30,.15);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="ti ti-check" style="font-size:13px;color:#5a9e1e"></i></div><div style="flex:1"><div style="font-weight:600;font-size:9px;color:#5a9e1e" id="s6-signed">✓ Travail en hauteur — Signé</div></div></div>
+            </div>
+          </div>
+          <div class="ph-nav">
+            <div class="ph-tab"><i class="ti ti-home"></i><span>Accueil</span></div>
+            <div class="ph-tab"><i class="ti ti-clock"></i><span>Pointer</span></div>
+            <div class="ph-tab active"><i class="ti ti-file-certificate"></i><span>Docs</span></div>
+            <div class="ph-tab"><i class="ti ti-dots"></i><span>Plus</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 7: ONBOARDING FLOW -->
+  <div class="slide" id="s7" style="justify-content:center">
+    <div class="slide-label" id="s7-label">Démarrage SaaS</div>
+    <h2 class="slide-h" style="font-size:clamp(24px,4vw,52px);margin-bottom:24px" id="s7-h">OPÉRATIONNEL<br>EN <span class="hl">3 ÉTAPES</span></h2>
+    <div style="margin-bottom:28px">
+      <div style="font-size:11px;font-weight:600;color:var(--orange);margin-bottom:12px;text-transform:uppercase;letter-spacing:.08em" id="s7-patron-lbl">👔 Patron</div>
+      <div class="flow">
+        <div class="flow-step orange"><div class="flow-num">1</div><div class="flow-label" id="s7-p1">Créer son compte</div><div class="flow-sub" id="s7-p1d">Nom entreprise + email</div></div>
+        <div class="flow-arr">→</div>
+        <div class="flow-step orange"><div class="flow-num">2</div><div class="flow-label" id="s7-p2">Ajouter les chantiers</div><div class="flow-sub" id="s7-p2d">Adresse, GPS, budget</div></div>
+        <div class="flow-arr">→</div>
+        <div class="flow-step orange"><div class="flow-num">3</div><div class="flow-label" id="s7-p3">Partager le lien QR</div><div class="flow-sub" id="s7-p3d">Un lien unique par entreprise</div></div>
+        <div class="flow-arr">→</div>
+        <div class="flow-step" style="border-color:rgba(234,140,42,.3)"><div style="font-size:20px">🎉</div><div class="flow-label" id="s7-p4">Prêt!</div><div class="flow-sub" id="s7-p4d">~10 minutes</div></div>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:11px;font-weight:600;color:var(--green);margin-bottom:12px;text-transform:uppercase;letter-spacing:.08em" id="s7-emp-lbl">👷 Employé</div>
+      <div class="flow">
+        <div class="flow-step green"><div class="flow-num">1</div><div class="flow-label" id="s7-e1">Scanner le QR</div><div class="flow-sub" id="s7-e1d">Ou ouvrir le lien</div></div>
+        <div class="flow-arr" style="color:var(--green)">→</div>
+        <div class="flow-step green"><div class="flow-num">2</div><div class="flow-label" id="s7-e2">Créer son compte</div><div class="flow-sub" id="s7-e2d">Nom + email + password</div></div>
+        <div class="flow-arr" style="color:var(--green)">→</div>
+        <div class="flow-step green"><div class="flow-num">3</div><div class="flow-label" id="s7-e3">Installer l'app</div><div class="flow-sub" id="s7-e3d">Ajouter à l'écran d'accueil</div></div>
+        <div class="flow-arr" style="color:var(--green)">→</div>
+        <div class="flow-step" style="border-color:rgba(61,184,122,.3)"><div style="font-size:20px">📱</div><div class="flow-label" id="s7-e4">Prêt!</div><div class="flow-sub" id="s7-e4d">~30 secondes</div></div>
+      </div>
+    </div>
+    <div style="margin-top:20px;background:var(--bg2);border:.5px solid var(--border);border-radius:10px;padding:12px;font-size:12px;color:var(--text2);display:flex;align-items:center;gap:8px">
+      <i class="ti ti-info-circle" style="color:var(--orange);font-size:15px;flex-shrink:0"></i>
+      <span id="s7-note">Les employés sont automatiquement liés à la bonne entreprise via un Company ID unique — aucune configuration manuelle.</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 8: TECH STACK -->
+  <div class="slide" id="s8" style="justify-content:center">
+    <div class="slide-label" id="s8-label">Architecture</div>
+    <h2 class="slide-h" style="font-size:clamp(24px,4vw,52px);margin-bottom:20px" id="s8-h">TECHNOLOGIE<br>SIMPLE ET <span class="hl">FIABLE</span></h2>
+    <div class="three-col" style="margin-bottom:16px">
+      <div class="card"><div style="font-size:28px;margin-bottom:8px">🗄️</div><div class="card-title">PocketBase</div><div class="card-desc" id="s8-d1">Backend complet en un seul binaire. Base de données SQLite, API REST, auth, fichiers, temps réel — tout inclus.</div><span class="badge badge-g">Open Source</span></div>
+      <div class="card"><div style="font-size:28px;margin-bottom:8px">🌐</div><div class="card-title" id="s8-t2">HTML / JS</div><div class="card-desc" id="s8-d2">Dashboard patron et app employé en HTML + CSS + JavaScript vanilla. Zéro framework, zéro dépendance NPM.</div><span class="badge badge-o">Single File</span></div>
+      <div class="card"><div style="font-size:28px;margin-bottom:8px">☁️</div><div class="card-title">Cloudflare</div><div class="card-desc" id="s8-d3">Tunnel Cloudflare pour l'accès HTTPS sans ouvrir de ports. Hébergement sur votre serveur ou VPS au Canada.</div><span class="badge badge-b">HTTPS auto</span></div>
+    </div>
+    <div style="background:var(--bg2);border:.5px solid var(--border);border-radius:10px;padding:14px;font-family:monospace;font-size:12px;color:var(--text2)">
+      <div style="color:var(--text3);margin-bottom:6px;font-size:10px">ARCHITECTURE</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:11px">
+        <span style="background:var(--bg3);padding:3px 8px;border-radius:5px;color:var(--green)">patron/index.html</span>
+        <span style="color:var(--text3)">+</span>
+        <span style="background:var(--bg3);padding:3px 8px;border-radius:5px;color:var(--blue)">employe/index.html</span>
+        <span style="color:var(--text3)">→</span>
+        <span style="background:var(--bg3);padding:3px 8px;border-radius:5px;color:var(--orange)">PocketBase :8090</span>
+        <span style="color:var(--text3)">→</span>
+        <span style="background:var(--bg3);padding:3px 8px;border-radius:5px;color:var(--text2)">Cloudflare Tunnel</span>
+        <span style="color:var(--text3)">→</span>
+        <span style="background:var(--bg3);padding:3px 8px;border-radius:5px;color:var(--text)">chantiertrack.com</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 9: COMPARISON -->
+  <div class="slide" id="s9" style="justify-content:center">
+    <div class="slide-label" id="s9-label">Comparaison</div>
+    <h2 class="slide-h" style="font-size:clamp(24px,4vw,48px);margin-bottom:20px" id="s9-h">CHANTIERTRACK vs<br><span class="hl">AUTRE SOLUTION</span></h2>
+    <div style="background:var(--bg2);border:.5px solid var(--border);border-radius:12px;overflow:hidden">
+      <table class="cmp-table">
+        <thead><tr><th id="s9-th1">Fonctionnalité</th><th id="s9-th-other">Autre solution</th><th style="color:var(--orange)">ChantierTrack v2</th></tr></thead>
+        <tbody>
+          <tr><td id="s9-r1">Pointage GPS + carte live</td><td><span style="color:#EF9F27;font-size:11px" id="s9-qb1">Selon forfait</span></td><td><i class="ti ti-check" style="color:var(--green)"></i></td></tr>
+          <tr><td id="s9-r2">Documents SST + signature</td><td><i class="ti ti-x" style="color:var(--red);opacity:.6"></i></td><td><i class="ti ti-check" style="color:var(--green)"></i></td></tr>
+          <tr><td id="s9-r3">Déclaration incidents terrain</td><td><i class="ti ti-x" style="color:var(--red);opacity:.6"></i></td><td><i class="ti ti-check" style="color:var(--green)"></i></td></tr>
+          <tr><td id="s9-r4">Horaires + congés</td><td><i class="ti ti-check" style="color:var(--green)"></i></td><td><i class="ti ti-check" style="color:var(--green)"></i></td></tr>
+          <tr><td id="s9-r5">Export paie + intégrations</td><td><i class="ti ti-check" style="color:var(--green)"></i></td><td><i class="ti ti-check" style="color:var(--green)"></i></td></tr>
+          <tr><td id="s9-r6">Interface 100% en français</td><td><i class="ti ti-x" style="color:var(--red);opacity:.6"></i></td><td><i class="ti ti-check" style="color:var(--green)"></i></td></tr>
+          <tr><td id="s9-r7">Données hébergées au Canada</td><td><i class="ti ti-x" style="color:var(--red);opacity:.6"></i></td><td><i class="ti ti-check" style="color:var(--green)"></i></td></tr>
+          <tr><td id="s9-r8" style="font-weight:500">Prix / 10 employés</td><td><span style="color:var(--text3);font-size:13px" id="s9-price-other">Variable</span></td><td><span style="color:var(--green);font-weight:600">159$/mois</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SLIDE 10: CTA FINAL -->
+  <div class="slide" id="s10" style="justify-content:center;align-items:center;text-align:center;background:radial-gradient(ellipse at center,rgba(234,140,42,.07) 0%,transparent 60%)">
+    <div style="font-size:48px;margin-bottom:14px">🚀</div>
+    <div style="font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);margin-bottom:10px" id="s10-label">Démarrer aujourd'hui</div>
+    <h2 style="font-family:var(--d);font-size:clamp(40px,6vw,80px);font-weight:900;line-height:.95;margin-bottom:16px" id="s10-h">ESSAI GRATUIT<br><span style="color:var(--orange)">30 JOURS</span></h2>
+    <p style="font-size:15px;color:var(--text2);font-weight:300;max-width:440px;margin:0 auto 24px" id="s10-sub">Sans carte de crédit. Configuration en 10 minutes. Support inclus.</p>
+    <div style="background:var(--bg2);border:.5px solid rgba(234,140,42,.3);border-radius:14px;padding:20px 32px;display:inline-flex;flex-direction:column;gap:8px;align-items:center;margin-bottom:20px">
+      <div style="font-family:var(--d);font-size:52px;font-weight:900;color:var(--orange);line-height:1">10$</div>
+      <div style="font-size:13px;color:var(--text2)" id="s10-price">CAD / employé / mois</div>
+      <div style="font-size:11px;color:var(--text3)" id="s10-note">Tout inclus · Annulable en tout temps</div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap">
+      <span class="badge badge-g"><i class="ti ti-check" style="font-size:10px"></i> <span id="s10-b1">CNESST ✓</span></span>
+      <span class="badge badge-o"><i class="ti ti-check" style="font-size:10px"></i> <span id="s10-b2">Loi 25 ✓</span></span>
+      <span class="badge badge-b"><i class="ti ti-check" style="font-size:10px"></i> <span id="s10-b3">Données Canada ✓</span></span>
+    </div>
+    <p style="font-size:13px;color:var(--orange);margin-top:20px;font-weight:500" id="s10-url">jobsitepro.example.com</p>
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-bar">
+  <button class="nav-btn" id="btn-prev" onclick="prevSlide()" disabled><i class="ti ti-arrow-left" style="font-size:13px"></i> <span id="prev-lbl">Précédent</span></button>
+  <div class="dots" id="dots"></div>
+  <button class="nav-btn primary" id="btn-next" onclick="nextSlide()"><span id="next-lbl">Suivant</span> <i class="ti ti-arrow-right" style="font-size:13px"></i></button>
+</div>
+
+<script>
+const TOTAL = 11;
+let current = 1;
+
+const SLIDE_TITLES = {
+  fr:['Accueil','Le Problème','La Solution','App Employé','Dashboard Patron','Paie Québec','Sécurité SST','Démarrage','Architecture','Comparaison','Démarrer'],
+  en:['Home','The Problem','The Solution','Employee App','Owner Dashboard','Quebec Payroll','Safety SST','Getting Started','Architecture','Comparison','Get Started']
+};
+
+const CONTENT = {
+  fr:{
+    's1-label':'Présentation officielle','s1-sub':'La solution de gestion de chantiers conçue pour la construction québécoise','s1-b1':'Pointage GPS','s1-b2':'Documents SST','s1-b3':'Paie automatique','s1-nav':'Appuyez → ou cliquez Suivant pour commencer',
+    's2-label':'Le problème','s2-h':'LES OUTILS<br>EXISTANTS NE<br>VOUS COMPRENNENT PAS','s2-sub':'QuickBooks Workforce est conçu pour tous les types de business. Pas pour la construction québécoise.',
+    's2-p1t':'❌ Pas de documents SST','s2-p1d':'La conformité CNESST se fait encore avec du papier',
+    's2-p2t':'❌ Interface partiellement en français','s2-p2d':'Vos employés et vous méritez un outil 100% en français',
+    's2-p3t':'❌ Données sur des serveurs américains','s2-p3d':'Problématique pour la Loi 25 au Québec',
+    's2-p4t':'❌ Prix élevé par utilisateur','s2-p4d':'~194$/mois pour 10 employés avec le plan Elite',
+    's3-label':'La solution','s3-h':'CHANTIERTRACK<br>A ÉTÉ CONÇU<br><span style="color:var(--orange)">POUR VOUS</span>',
+    's3-sub':'Un seul outil qui couvre tout le cycle de gestion d\'un chantier.','s3-c1':'100% en français + anglais','s3-c2':'Données hébergées au Canada (Loi 25)','s3-c3':'Documents SST avec signature électronique','s3-c4':'10$ CAD / employé / mois — tout inclus',
+    's3-price-sub':'CAD / employé / mois','s3-p1':'10 employés','s3-p2':'20 employés','s3-p3':'50 employés','s3-vs':'vs QuickBooks Elite (CAD)','s3-qb':'QB · 10 employés','s3-ct':'CT · 10 employés',
+    's4-label':'App mobile employé','s4-h':'L\'EMPLOYÉ<br>GÈRE TOUT<br><span style="color:var(--orange)">DEPUIS SON TÉLÉPHONE</span>','s4-sub':'PWA installable — aucun App Store requis. Fonctionne sur iPhone et Android.',
+    's5-label':'Dashboard patron','s5-h':'TOUT SOUS CONTRÔLE<br>EN UN COUP D\'ŒIL','s5-f1':'Carte live','s5-d1':'Voyez tous vos employés sur une carte en temps réel.','s5-f2':'Pointages','s5-d2':'Registre complet. Filtrage par période. Export CSV.','s5-f3':'Paie','s5-d3':'Calcul automatique. Bulletins. Export QuickBooks.','s5-f4':'Horaires','s5-d4':'Grille hebdomadaire. Shifts + notifications auto.','s5-f5':'Facturation','s5-d5':'Coût par chantier. Alertes dépassement budget.','s5-f6':'Congés','s5-d6':'Demandes employé. Approbation en un clic.',
+    's6-label':'Paie & Comptabilité','s6-h':'PAIE QUÉBEC<br><span style="color:var(--orange)">AUTOMATISÉE</span>','s6-sub':'Toutes les retenues à la source calculées automatiquement selon les taux Québec 2025.',
+    's6-c1':'Bulletins de paie avec toutes les retenues','s6-c2':'Remises employeur calculées (RRQ+AE+RQAP)','s6-c3':'Export RL-1 / T4 données annuelles','s6-c4':'Export QuickBooks IIF + CSV + Acomba','s6-c5':'Accès lecture seule pour votre comptable',
+    's6-stub':'Bulletin · Marc Tremblay · Bip. 24','s6-gross-lbl':'Salaire brut (80h + 4h OT)','s6-tax-lbl':'- Impôt fédéral + QC (est.)','s6-net-lbl':'= Salaire net estimé','s6-er-lbl':'Part patronale à remettre',
+    's6-disclaimer':'* Impôt = estimation tranche de base. Comptable doit valider avec TD1 fédéral + TP-1015 Québec.',
+    's7-label':'Sécurité & Conformité','s7-h':'CONFORMITÉ<br>CNESST<br><span style="color:var(--orange)">SIMPLIFIÉE</span>','s7-sub':'La gestion des documents SST est un avantage unique que QuickBooks n\'offre pas.',
+    's6-s1t':'Envoi de documents','s6-s1d':'Le patron envoie les formulaires SST. Notification push immédiate.','s6-s2t':'Signature sur téléphone','s6-s2d':'L\'employé signe avec son doigt. Signature PNG sauvegardée.','s6-s3t':'Suivi en temps réel','s6-s3d':'Le patron voit qui a signé. Rappels automatiques.',
+    's6-ph-title':'Documents à signer','s6-ph-sub':'3 documents requis','s6-sign-lbl':'Limite: 14 jan.','s6-sign-btn':'Signer','s6-sign-btn2':'Signer','s6-signed':'✓ Travail en hauteur — Signé',
+    's7-label':'Démarrage SaaS','s7-h':'OPÉRATIONNEL<br>EN <span style="color:var(--orange)">3 ÉTAPES</span>','s7-patron-lbl':'👔 Patron','s7-emp-lbl':'👷 Employé',
+    's7-p1':'Créer son compte','s7-p1d':'Nom entreprise + email','s7-p2':'Ajouter les chantiers','s7-p2d':'Adresse, GPS, budget','s7-p3':'Partager le lien QR','s7-p3d':'Un lien unique par entreprise','s7-p4':'Prêt!','s7-p4d':'~10 minutes',
+    's7-e1':'Scanner le QR','s7-e1d':'Ou ouvrir le lien','s7-e2':'Créer son compte','s7-e2d':'Nom + email + password','s7-e3':'Installer l\'app','s7-e3d':'Ajouter à l\'écran d\'accueil','s7-e4':'Prêt!','s7-e4d':'~30 secondes',
+    's7-note':'Les employés sont automatiquement liés à la bonne entreprise via un Company ID unique.',
+    's8-label':'Architecture','s8-h':'TECHNOLOGIE<br>SIMPLE ET <span style="color:var(--orange)">FIABLE</span>','s8-d1':'Backend complet en un seul binaire. Base de données, API, auth, fichiers — tout inclus.','s8-t2':'HTML / JS','s8-d2':'Dashboard et app en HTML + JS vanilla. Zéro framework, zéro dépendance.','s8-d3':'Tunnel Cloudflare pour HTTPS sans ouvrir de ports. Hébergement au Canada.',
+    's9-label':'Comparaison','s9-h':'CHANTIERTRACK vs<br><span style="color:var(--orange)">AUTRE SOLUTION</span>','s9-th1':'Fonctionnalité','s9-th-other':'Autre solution','s9-qb1':'Selon forfait',
+    's9-r1':'Pointage GPS + carte live','s9-r2':'Documents SST + signature','s9-r3':'Déclaration incidents terrain','s9-r4':'Horaires + congés','s9-r5':'Export paie + intégrations','s9-r6':'Interface 100% en français','s9-r7':'Données hébergées au Canada','s9-r8':'Prix / 10 employés','s9-price-other':'Variable',
+    's10-label':'Démarrer aujourd\'hui','s10-h':'ESSAI GRATUIT<br><span style="color:var(--orange)">30 JOURS</span>','s10-sub':'Sans carte de crédit. Configuration en 10 minutes. Support inclus.','s10-price':'CAD / employé / mois','s10-note':'Tout inclus · Annulable en tout temps','s10-b1':'CNESST ✓','s10-b2':'Loi 25 ✓','s10-b3':'Données Canada ✓','s10-url':'jobsitepro.example.com',
+    'prev-lbl':'Précédent','next-lbl':'Suivant',
+  },
+  en:{
+    's1-label':'Official Presentation','s1-sub':'The job site management solution built for Quebec construction','s1-b1':'GPS Tracking','s1-b2':'Safety Docs','s1-b3':'Auto Payroll','s1-nav':'Press → or click Next to begin',
+    's2-label':'The Problem','s2-h':'EXISTING TOOLS<br>DON\'T UNDERSTAND<br>YOUR BUSINESS','s2-sub':'QuickBooks Workforce is built for all business types — not for Quebec construction.',
+    's2-p1t':'❌ No safety (SST) documents','s2-p1d':'CNESST compliance still done with paper',
+    's2-p2t':'❌ Partially in French','s2-p2d':'Your team deserves a 100% French tool',
+    's2-p3t':'❌ Data on US servers','s2-p3d':'Problematic for Quebec\'s Bill 25 (privacy law)',
+    's2-p4t':'❌ High per-user pricing','s2-p4d':'~$194/month for 10 employees on Elite plan',
+    's3-label':'The Solution','s3-h':'CHANTIERTRACK<br>WAS BUILT<br><span style="color:var(--orange)">FOR YOU</span>',
+    's3-sub':'One tool covering the full construction job site management cycle.','s3-c1':'100% French + English','s3-c2':'Data hosted in Canada (Bill 25)','s3-c3':'Safety documents with e-signature','s3-c4':'$10 CAD / employee / month — all included',
+    's3-price-sub':'CAD / employee / month','s3-p1':'10 employees','s3-p2':'20 employees','s3-p3':'50 employees','s3-vs':'vs QuickBooks Elite (CAD)','s3-qb':'QB · 10 employees','s3-ct':'CT · 10 employees',
+    's4-label':'Employee mobile app','s4-h':'EMPLOYEES MANAGE<br>EVERYTHING<br><span style="color:var(--orange)">FROM THEIR PHONE</span>','s4-sub':'Installable PWA — no App Store needed. Works on iPhone and Android.',
+    's5-label':'Owner dashboard','s5-h':'EVERYTHING UNDER CONTROL<br>AT A GLANCE','s5-f1':'Live map','s5-d1':'See all employees on a map in real time.','s5-f2':'Time tracking','s5-d2':'Full registry. Period filter. One-click CSV export.','s5-f3':'Payroll','s5-d3':'Auto calculation. Pay stubs. QuickBooks export.','s5-f4':'Schedules','s5-d4':'Weekly grid. Shifts + auto notifications.','s5-f5':'Billing','s5-d5':'Cost per site. Over-budget alerts.','s5-f6':'Time off','s5-d6':'Employee requests. One-click approval.',
+    's6-label':'Payroll & Accounting','s6-h':'QUEBEC PAYROLL<br><span style="color:var(--orange)">AUTOMATED</span>','s6-sub':'All source deductions calculated automatically using Quebec 2025 rates.',
+    's6-c1':'Pay stubs with all deductions','s6-c2':'Employer remittances calculated (QPP+EI+QPIP)','s6-c3':'RL-1 / T4 annual data export','s6-c4':'QuickBooks IIF + CSV + Acomba export','s6-c5':'Read-only access for your accountant',
+    's6-stub':'Pay stub · Marc Tremblay · Period 24','s6-gross-lbl':'Gross pay (80h + 4h OT)','s6-tax-lbl':'- Federal + Quebec tax (est.)','s6-net-lbl':'= Estimated net pay','s6-er-lbl':'Employer remittance',
+    's6-disclaimer':'* Tax = basic bracket estimate. Accountant must validate with TD1 federal + TP-1015 Quebec.',
+    's7-label':'Safety & Compliance','s7-h':'CNESST COMPLIANCE<br><span style="color:var(--orange)">SIMPLIFIED</span>','s7-sub':'Safety document management is a unique advantage QuickBooks doesn\'t offer.',
+    's6-s1t':'Document distribution','s6-s1d':'Manager sends SST forms from dashboard. Instant push notification.','s6-s2t':'Sign on phone','s6-s2d':'Employee signs with finger. PNG signature saved.','s6-s3t':'Real-time tracking','s6-s3d':'Manager sees who signed, who hasn\'t. Auto reminders.',
+    's6-ph-title':'Documents to sign','s6-ph-sub':'3 documents required','s6-sign-lbl':'Deadline: Jan 14','s6-sign-btn':'Sign','s6-sign-btn2':'Sign','s6-signed':'✓ Working at heights — Signed',
+    's7-label':'SaaS Onboarding','s7-h':'UP AND RUNNING<br>IN <span style="color:var(--orange)">3 STEPS</span>','s7-patron-lbl':'👔 Owner','s7-emp-lbl':'👷 Employee',
+    's7-p1':'Create account','s7-p1d':'Company name + email','s7-p2':'Add job sites','s7-p2d':'Address, GPS, budget','s7-p3':'Share QR link','s7-p3d':'One unique link per company','s7-p4':'Ready!','s7-p4d':'~10 minutes',
+    's7-e1':'Scan QR code','s7-e1d':'Or open the link','s7-e2':'Create account','s7-e2d':'Name + email + password','s7-e3':'Install the app','s7-e3d':'Add to home screen','s7-e4':'Ready!','s7-e4d':'~30 seconds',
+    's7-note':'Employees are automatically linked to the right company via a unique Company ID.',
+    's8-label':'Architecture','s8-h':'SIMPLE AND<br><span style="color:var(--orange)">RELIABLE</span> TECH','s8-d1':'Complete backend in one binary. Database, API, auth, files — all included.','s8-t2':'HTML / JS','s8-d2':'Dashboard and employee app in vanilla HTML + JS. Zero framework, zero npm.','s8-d3':'Cloudflare Tunnel for HTTPS without opening ports. Hosted in Canada.',
+    's9-label':'Comparison','s9-h':'CHANTIERTRACK vs<br><span style="color:var(--orange)">OTHER TOOLS</span>','s9-th1':'Feature','s9-th-other':'Other solution','s9-qb1':'Plan-dependent',
+    's9-r1':'GPS tracking + live map','s9-r2':'Safety documents + e-signature','s9-r3':'Field incident reporting','s9-r4':'Schedules + time off','s9-r5':'Payroll export + integrations','s9-r6':'100% in French','s9-r7':'Data hosted in Canada','s9-r8':'Price / 10 employees','s9-price-other':'Varies',
+    's10-label':'Start today','s10-h':'FREE TRIAL<br><span style="color:var(--orange)">30 DAYS</span>','s10-sub':'No credit card. Set up in 10 minutes. Support included.','s10-price':'CAD / employee / month','s10-note':'All included · Cancel anytime','s10-b1':'CNESST ✓','s10-b2':'Bill 25 ✓','s10-b3':'Canada data ✓','s10-url':'jobsitepro.example.com',
+    'prev-lbl':'Previous','next-lbl':'Next',
+  }
+};
+
+let lang = 'fr';
+
+function setLang(l) {
+  lang = l;
+  document.getElementById('lbtn-fr').classList.toggle('active', l==='fr');
+  document.getElementById('lbtn-en').classList.toggle('active', l==='en');
+  const data = CONTENT[l];
+  const HTML_IDS = ['s2-h','s3-h','s4-h','s7-h','s8-h','s9-h','s10-h','s7-patron-lbl','s7-emp-lbl'];
+  for (const [id, val] of Object.entries(data)) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    if (HTML_IDS.includes(id)) el.innerHTML = val;
+    else el.textContent = val;
+  }
+  updateTitle();
+}
+
+function buildDots() {
+  const c = document.getElementById('dots');
+  c.innerHTML = '';
+  for (let i = 1; i <= TOTAL; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === current ? ' active' : '');
+    d.onclick = () => goTo(i);
+    d.title = SLIDE_TITLES[lang][i-1] || i;
+    c.appendChild(d);
+  }
+}
+
+function updateTitle() {
+  document.getElementById('top-slide-title').textContent = SLIDE_TITLES[lang][current-1] || '';
+  document.getElementById('slide-counter').textContent = `${current} / ${TOTAL}`;
+  document.getElementById('btn-prev').disabled = current === 1;
+  document.getElementById('btn-next').textContent = '';
+  const span = document.createElement('span');
+  span.id = 'next-lbl';
+  span.textContent = current === TOTAL ? (lang==='fr'?'Retour au début':'Back to start') : CONTENT[lang]['next-lbl'];
+  document.getElementById('btn-next').appendChild(span);
+  const icon = document.createElement('i');
+  icon.className = current === TOTAL ? 'ti ti-refresh' : 'ti ti-arrow-right';
+  icon.style.fontSize = '13px';
+  document.getElementById('btn-next').appendChild(icon);
+  document.getElementById('btn-prev').innerHTML = `<i class="ti ti-arrow-left" style="font-size:13px"></i> <span>${CONTENT[lang]['prev-lbl']}</span>`;
+  document.getElementById('btn-prev').disabled = current === 1;
+  buildDots();
+}
+
+function goTo(n) {
+  document.getElementById('s'+current)?.classList.remove('active');
+  current = Math.max(1, Math.min(TOTAL, n));
+  document.getElementById('s'+current)?.classList.add('active');
+  updateTitle();
+}
+
+function nextSlide() { goTo(current === TOTAL ? 1 : current + 1); }
+function prevSlide() { goTo(current - 1); }
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                    { e.preventDefault(); prevSlide(); }
+});
+
+// Init
+setLang('fr');
+buildDots();
+</script>
+</body>
+</html>

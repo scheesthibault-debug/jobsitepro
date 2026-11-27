@@ -1,0 +1,107 @@
+/* JobsitePro — skins (tokens only; le layout reste dans index.html) */
+body[data-skin="blueprint"] {
+  --bg: #070D1B; --bg2: #0C1425; --bg3: #111D32; --bg4: #192640;
+  --border: rgba(74,142,255,.09); --border2: rgba(74,142,255,.18);
+  --text: #DCE8FF; --text2: #7A8FAD; --text3: #485470;
+  --orange: #F0A832; --orange-bg: rgba(240,168,50,.10);
+  --green: #3DAF72; --green-bg: rgba(61,175,114,.10); --green-l: #52D48D;
+  --red: #E05252; --red-bg: rgba(224,82,82,.10);
+  --blue: #4A8EFF; --blue-bg: rgba(74,142,255,.10);
+  --amber: #EFA027; --amber-bg: rgba(239,160,39,.10);
+  --teal: #1DAF85; --teal-bg: rgba(29,175,133,.10);
+  --purple: #8478E2; --purple-bg: rgba(132,120,226,.10);
+  --radius: 7px; --radius-lg: 11px;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+body[data-skin="forge"] {
+  --bg: #0B0C10; --bg2: #111318; --bg3: #17181E; --bg4: #21222A;
+  --border: rgba(255,255,255,.065); --border2: rgba(255,255,255,.13);
+  --text: #EDEEF3; --text2: #9496A8; --text3: #5A5C70;
+  --orange: #F0A832; --orange-bg: rgba(240,168,50,.10);
+  --green: #3FA66B; --green-bg: rgba(63,166,107,.10); --green-l: #5DC98A;
+  --red: #E04F4E; --red-bg: rgba(224,79,78,.10);
+  --blue: #4A91FF; --blue-bg: rgba(74,145,255,.10);
+  --amber: #EFA027; --amber-bg: rgba(239,160,39,.10);
+  --teal: #20A67C; --teal-bg: rgba(32,166,124,.10);
+  --purple: #8078E0; --purple-bg: rgba(128,120,224,.10);
+  --radius: 7px; --radius-lg: 11px;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+body[data-skin="onyx"] {
+  --bg: #080809; --bg2: #0F0F11; --bg3: #141416; --bg4: #1E1E21;
+  --border: rgba(255,255,255,.055); --border2: rgba(255,255,255,.11);
+  --text: #F0F0F1; --text2: #888890; --text3: #52525A;
+  --orange: #E88020; --orange-bg: rgba(232,128,32,.09);
+  --green: #3CA86A; --green-bg: rgba(60,168,106,.09); --green-l: #4FCC84;
+  --red: #DF5050; --red-bg: rgba(223,80,80,.09);
+  --blue: #4D90F5; --blue-bg: rgba(77,144,245,.09);
+  --amber: #EE9E25; --amber-bg: rgba(238,158,37,.09);
+  --teal: #1EAA80; --teal-bg: rgba(30,170,128,.09);
+  --purple: #8279DF; --purple-bg: rgba(130,121,223,.09);
+  --radius: 6px; --radius-lg: 10px;
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  letter-spacing: .01em;
+}
+
+body[data-skin="blueprint"].theme-light {
+  --bg: #E8EEF8; --bg2: #FFFFFF; --bg3: #DCE6F5; --bg4: #C5D4EA;
+  --border: rgba(74,142,255,.14); --border2: rgba(74,142,255,.24);
+  --text: #1A2744; --text2: #4A5F7A; --text3: #6B7F99;
+  --orange: #D4920A; --orange-bg: rgba(212,146,10,.14);
+  --green: #2E9460; --green-bg: rgba(46,148,96,.12); --green-l: #2E9460;
+  --red: #D63C3C; --red-bg: rgba(214,60,60,.12);
+  --blue: #3B7CE8; --blue-bg: rgba(59,124,232,.12);
+  --amber: #D4920A; --amber-bg: rgba(212,146,10,.12);
+  --teal: #178F6E; --teal-bg: rgba(23,143,110,.12);
+  --purple: #6A5FD4; --purple-bg: rgba(106,95,212,.12);
+}
+
+body[data-skin="forge"].theme-light {
+  --bg: #F2F2F4; --bg2: #FFFFFF; --bg3: #E8E8EC; --bg4: #D4D4DA;
+  --border: rgba(20,22,30,.10); --border2: rgba(20,22,30,.18);
+  --text: #1C1D22; --text2: #52545E; --text3: #737682;
+  --orange: #D4920A; --orange-bg: rgba(212,146,10,.14);
+  --green: #2F8F5C; --green-bg: rgba(47,143,92,.12); --green-l: #2F8F5C;
+  --red: #D63C3C; --red-bg: rgba(214,60,60,.12);
+  --blue: #3B7CE8; --blue-bg: rgba(59,124,232,.12);
+  --amber: #D4920A; --amber-bg: rgba(212,146,10,.12);
+  --teal: #178F6E; --teal-bg: rgba(23,143,110,.12);
+  --purple: #6A5FD4; --purple-bg: rgba(106,95,212,.12);
+}
+
+body[data-skin="onyx"].theme-light {
+  --bg: #F5F5F6; --bg2: #FFFFFF; --bg3: #EBEBED; --bg4: #D8D8DC;
+  --border: rgba(24,24,27,.10); --border2: rgba(24,24,27,.17);
+  --text: #18181B; --text2: #52525A; --text3: #71717A;
+  --orange: #C87212; --orange-bg: rgba(200,114,18,.12);
+  --green: #2F8F5C; --green-bg: rgba(47,143,92,.12); --green-l: #2F8F5C;
+  --red: #D63C3C; --red-bg: rgba(214,60,60,.12);
+  --blue: #3B7CE8; --blue-bg: rgba(59,124,232,.12);
+  --amber: #D4920A; --amber-bg: rgba(212,146,10,.12);
+  --teal: #178F6E; --teal-bg: rgba(23,143,110,.12);
+  --purple: #6A5FD4; --purple-bg: rgba(106,95,212,.12);
+}
+
+.skin-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.skin-chip{display:flex;flex-direction:column;align-items:stretch;padding:10px;border-radius:var(--radius-lg);border:0.5px solid var(--border2);background:var(--bg3);cursor:pointer;text-align:left;transition:border-color .15s,background .15s}
+.skin-chip:hover{background:var(--bg4)}
+.skin-chip.active{border-color:var(--orange);background:var(--orange-bg);box-shadow:0 0 0 1px var(--orange)}
+.skin-swatch{display:block;height:32px;border-radius:6px;margin-bottom:8px;border:0.5px solid var(--border)}
+.skin-label{font-size:12px;font-weight:600;color:var(--text)}
+
+.skin-select{position:relative;display:inline-flex;flex-shrink:0}
+.skin-select-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 10px 6px 8px;font-size:12px;font-weight:600;color:var(--text2);background:var(--bg3);border:0.5px solid var(--border2);border-radius:6px;cursor:pointer;min-height:36px;line-height:1}
+.skin-select-btn:hover{background:var(--bg4);color:var(--text)}
+.skin-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;box-shadow:0 0 0 1px rgba(255,255,255,.15)}
+.skin-chev{font-size:12px;color:var(--text3);opacity:.85}
+.skin-select-menu{display:none;position:absolute;top:calc(100% + 4px);right:0;min-width:152px;background:var(--bg2);border:0.5px solid var(--border2);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.45);z-index:250;padding:4px}
+.skin-select.open .skin-select-menu{display:block}
+.skin-select-item{display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;font-size:12px;border:none;background:transparent;color:var(--text);border-radius:6px;cursor:pointer;text-align:left}
+.skin-select-item:hover{background:var(--bg3)}
+.skin-select-item.active{background:var(--orange-bg);color:var(--orange)}
+.skin-select-item .skin-check{margin-left:auto;font-size:14px;color:var(--orange)}
+.skin-select-divider{height:0.5px;background:var(--border2);margin:4px 6px}
+.skin-select-section{padding:6px 10px 4px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text3)}
+.skin-select-hint{padding:6px 10px 8px;font-size:10px;line-height:1.35;color:var(--text3)}

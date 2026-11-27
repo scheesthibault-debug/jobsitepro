@@ -1,0 +1,17 @@
+[Unit]
+Description=ChantierTrack Web Push Server
+After=network.target chantiertrack.service
+Wants=chantiertrack.service
+
+[Service]
+Type=simple
+User=chantiertrack
+Group=chantiertrack
+WorkingDirectory=/opt/chantiertrack/push
+ExecStart=/usr/bin/node /opt/chantiertrack/push/server.js
+Restart=always
+RestartSec=5
+Environment=POCKETBASE_URL=http://127.0.0.1:8090
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,9 @@
+{
+  "name": "jobsitepro",
+  "private": true,
+  "scripts": {
+    "dev:ocr": "node services/receipt-ocr/server.js",
+    "dev:integrations": "npm run dev --prefix services/integrations-hub",
+    "dev:contact": "node services/contact-mail/server.js"
+  }
+}
